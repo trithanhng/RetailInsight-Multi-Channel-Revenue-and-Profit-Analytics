@@ -91,7 +91,7 @@ Bốn trang: Tổng quan; Kênh và thị trường; Sản phẩm; Dữ liệu v
 
 Các ca kiểm thử, phương pháp đối chiếu và giới hạn kiểm tra UI: [VALIDATION.md](VALIDATION.md). Hướng dẫn chạy: [README](../README.md). Demo: [DEMO.md](DEMO.md). Log và dữ liệu mẫu: [output/evidence](../output/evidence).
 
-[Repository dự án](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics); nhánh triển khai `feat/assignment-completion-20261116`. Trạng thái CI cần kiểm tra trên đúng commit ở GitHub Actions. Giới hạn minh chứng giao diện được ghi tại [bản rà soát](COMPLIANCE_REVIEW.md).
+[Repository dự án](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics); nhánh triển khai `feat/assignment-completion-20261116`. Trạng thái CI cần kiểm tra trên đúng commit ở GitHub Actions. Ảnh giao diện thật và xác nhận từng bước: [SCREENSHOT_REVIEW.md](SCREENSHOT_REVIEW.md).
 
 ## 8 Nguồn và công cụ AI
 

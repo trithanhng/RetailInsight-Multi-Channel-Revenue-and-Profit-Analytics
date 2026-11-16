@@ -12,6 +12,8 @@ Pipeline nạp dữ liệu Microsoft AdventureWorksDW, kiểm tra chất lượn
 
 ## Dashboard
 
+[9 ảnh dashboard thật và xác nhận từng bước](docs/SCREENSHOT_REVIEW.md).
+
 - **Tổng quan:** doanh thu, lợi nhuận gộp, biên gộp, tăng trưởng tháng, xu hướng và nhận xét theo bộ lọc.
 - **Kênh và thị trường:** so sánh Internet/Reseller, hiệu quả vùng, bảng và CSV bằng USD.
 - **Sản phẩm:** tìm theo danh mục, xếp hạng lợi nhuận cao/thấp, giữ cả sản phẩm lỗ.
@@ -139,6 +141,6 @@ Kiểm thử bao gồm tiền/chiết khấu, giao dịch lỗ, khóa và phép 
 
 Có cấu hình GitHub Actions tại `.github/workflows/ci.yml`; kiểm tra kết quả trên đúng commit sau khi push. Repository: [winter-1402/RetailInsight](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics). Quy trình làm việc theo nhánh: [docs/GITHUB.md](docs/GITHUB.md). ZIP loại dữ liệu thô, môi trường ảo, cache, thông tin Git và tài liệu giao đề gốc.
 
-Kiểm chứng ngày 16/11/2026: **32/32 test local đạt**. Lượt Actions đầu tiên bị GitHub chặn trước khi chạy do billing tài khoản chủ repository; xem [kết quả và cách chạy lại](docs/VALIDATION.md). Các điều kiện còn cần nhóm xác nhận khi nộp nằm trong [bản rà soát đầy đủ](docs/COMPLIANCE_REVIEW.md).
+Kiểm chứng ngày 16/11/2026: **34/34 test local đạt**. Lượt Actions đầu tiên bị GitHub chặn trước khi chạy do billing tài khoản chủ repository; xem [kết quả và cách chạy lại](docs/VALIDATION.md). Các điều kiện còn cần nhóm xác nhận khi nộp nằm trong [bản rà soát đầy đủ](docs/COMPLIANCE_REVIEW.md).
 
 Giấy phép mã: [MIT](LICENSE). Nguồn và giấy phép bên thứ ba: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Công cụ AI và trách nhiệm học thuật được công khai ở [docs/AI_USAGE.md](docs/AI_USAGE.md).

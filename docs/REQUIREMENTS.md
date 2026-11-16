@@ -20,11 +20,11 @@ Căn cứ mục II và phần ĐỀ TÀI 01 trong tài liệu giao bài CO4033. 
 | Báo cáo PDF/DOCX, kiến trúc, thực nghiệm, sai số | PDF và docs/BAO_CAO.md; sơ đồ pipeline; dung sai tiền; kỳ biên |
 | Slide/demo | docs/DEMO.md; ứng dụng Streamlit chạy local |
 | Log và mẫu đầu ra | output/evidence; --verify lưu mã thoát và stdout thực |
-| Hình minh chứng | Biểu đồ kết quả sinh từ mart; giao diện Tổng quan đã quan sát trực tiếp. Ảnh chụp UI chưa lưu do giới hạn công cụ trình duyệt; không thay bằng ảnh giả |
+| Hình minh chứng | 9 ảnh cửa sổ Chrome thật và bảng xác nhận tại docs/SCREENSHOT_REVIEW.md; biểu đồ từ mart được phân biệt với ảnh UI |
 | Liên kết repository | [RetailInsight](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics); nhánh feat/assignment-completion-20261116 |
 | Ghi công cụ AI và giới hạn học thuật | docs/AI_USAGE.md; phần phương pháp trong báo cáo |
 
-Không khẳng định hệ thống đã đạt quy mô Big Data hoặc mọi điều kiện nộp lớp đã hoàn tất khi ảnh giao diện và đóng góp học thuật chưa được xác nhận. Bản mã nguồn, dashboard, báo cáo và phép đo được kiểm chứng riêng với các phần phụ thuộc hình thức nộp.
+Không khẳng định hệ thống đã đạt quy mô Big Data hoặc mọi điều kiện nộp lớp đã hoàn tất khi đóng góp học thuật chưa được nhóm xác nhận. Bản mã nguồn, dashboard, báo cáo, ảnh thật và phép đo được kiểm chứng riêng với các phần phụ thuộc hình thức nộp.
 
 
 Rà soát ngày 16/11/2026 và trạng thái các minh chứng: [COMPLIANCE_REVIEW.md](COMPLIANCE_REVIEW.md).

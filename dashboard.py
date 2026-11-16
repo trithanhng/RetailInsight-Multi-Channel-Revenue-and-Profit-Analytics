@@ -55,6 +55,9 @@ def custom_dates():
     st.session_state.period = 'Tùy chọn'
 
 
+st.session_state.setdefault('date_start', source_start)
+st.session_state.setdefault('date_end', source_end)
+
 with st.sidebar:
     st.markdown('<div class="eyebrow">RETAILINSIGHT / BI</div>', unsafe_allow_html=True)
     st.header('Phạm vi phân tích')
@@ -62,11 +65,13 @@ with st.sidebar:
     st.selectbox('Giai đoạn', ['Toàn bộ dữ liệu', 'Kỳ chung hai kênh', 'Tùy chọn'],
         key='period', on_change=apply_period,
         help='Kỳ chung chỉ dùng các tháng nằm trọn trong phạm vi ghi nhận của cả hai kênh.')
-    left, right = st.columns(2)
-    start = left.date_input('Từ ngày', value=source_start, min_value=source_start, max_value=source_end,
+    start = st.date_input('Từ ngày', value=None, min_value=source_start, max_value=source_end,
         format='DD/MM/YYYY', key='date_start', on_change=custom_dates)
-    end = right.date_input('Đến ngày', value=source_end, min_value=source_start, max_value=source_end,
+    end = st.date_input('Đến ngày', value=None, min_value=source_start, max_value=source_end,
         format='DD/MM/YYYY', key='date_end', on_change=custom_dates)
+    if start is None or end is None:
+        st.warning('Chọn đủ ngày bắt đầu và ngày kết thúc để tiếp tục phân tích.')
+        st.stop()
     channel = st.selectbox('Kênh bán', [ALL] + sorted(fact.channel.unique()), key='channel',
         format_func=lambda v: 'Tất cả kênh bán' if v == ALL else CHANNEL_LABELS.get(v, v))
     region = st.selectbox('Vùng bán hàng', [ALL] + sorted(fact.region.unique()), key='region',

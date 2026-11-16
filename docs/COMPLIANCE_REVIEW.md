@@ -23,7 +23,7 @@ Ngày rà soát: 16/11/2026. Căn cứ mục II và phần ĐỀ TÀI 01 của h
 
 ## Các điểm chưa thể tự xác nhận thay sinh viên
 
-1. **Ảnh dashboard:** cần ảnh chụp giao diện thật theo yêu cầu minh chứng. Công cụ điều khiển trình duyệt trên Windows dừng do không xác định chắc URL; hồ sơ không dùng biểu đồ dữ liệu hoặc ảnh dựng để giả làm ảnh dashboard. Các kiểm thử AppTest đã thực thi ứng dụng và biểu đồ. Bổ sung ảnh khi demo trực tiếp nếu công cụ chưa lưu được.
+1. **Ảnh dashboard — đã bổ sung:** ngày 16/11/2026 lưu 9 ảnh cửa sổ Chrome thật, gồm tổng quan, nhận xét, kênh, vùng, sản phẩm, chất lượng, benchmark, lọc Internet và reset. Xem [xác nhận từng bước](SCREENSHOT_REVIEW.md). Không còn thiếu bộ ảnh; phạm vi quan sát desktop và giới hạn kiểm tra được ghi rõ.
 2. **Phân công/đóng góp cá nhân:** chưa ghi tên và tỷ lệ vì người dùng đã yêu cầu bỏ qua khâu này; không tự suy đoán. Nếu giảng viên yêu cầu trong bản nộp cuối, nhóm tự xác nhận đóng góp thực tế.
 3. **Liêm chính học thuật:** đã khai báo AI. Điều kiện đề bài “không nộp sản phẩm được AI tạo toàn bộ hoặc phần lớn” cần sinh viên tự đáp ứng qua việc hiểu, chỉnh sửa và đóng góp; số test đạt không chứng minh điều kiện này.
 4. **CI trên GitHub:** đã push và kiểm tra [run 43798469228](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228) của commit `ba17761`. GitHub báo “The job was not started because your account is locked due to a billing issue.” Job chưa chạy bước nào. Chủ repository cần xử lý billing/account rồi chạy lại workflow; không thể kết luận CI đạt từ 32 test local. Xem [minh chứng](../output/evidence/github_ci_status.json).

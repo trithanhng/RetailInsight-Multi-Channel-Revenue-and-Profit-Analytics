@@ -21,7 +21,7 @@
 | test_report.py | PDF/Markdown chứa số liệu thực, tính chất giả lập và kỳ so sánh đúng |
 | test_delivery.py | ZIP có entrypoint/theme/CI/PDF, không chứa dữ liệu thô, bytecode, môi trường hoặc mã cũ |
 
-AppTest thực thi ứng dụng và các biểu đồ/bảng nhưng không thay thế kiểm tra bằng mắt. Trang Tổng quan đã được quan sát trực tiếp trên Chrome ở khung rộng; thao tác trình duyệt tự động sau đó dừng vì không xác minh chắc URL trên Windows. Không có ảnh giao diện giả được đưa vào hồ sơ. Hình README/PDF là biểu đồ tổng hợp dữ liệu được ghi nhãn rõ.
+AppTest thực thi ứng dụng và các biểu đồ/bảng nhưng không thay thế kiểm tra bằng mắt. Ngày 16/11/2026 đã lưu 9 ảnh cửa sổ Chrome thực tế: [xác nhận từng bước](SCREENSHOT_REVIEW.md). Đã quan sát các trang, bộ lọc Internet và reset; bản sửa reset loại cảnh báo mặc định ngày, kiểm tra ngày bị xóa và mở rộng ô ngày. Hình tổng hợp trong PDF vẫn là biểu đồ dữ liệu, được phân biệt với ảnh UI trong docs/screenshots.
 
 ## Benchmark
 
@@ -35,7 +35,7 @@ Windows có thể in cảnh báo native Hadoop và `ERROR: Access denied` lúc d
 
 Kiểm tra GitHub Actions trên đúng commit sau khi push. Kết quả local không thay thế kết quả CI; không dùng badge CI “đạt” trước khi workflow chạy thực tế.
 
-Ngày 16/11/2026, [run 43798469228](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228) cho commit `ba17761` bị GitHub chặn trước khi chạy job vì tài khoản chủ repository bị khóa do billing. Không có step nào được thực thi. Chủ repository xử lý phần tài khoản rồi chọn **Re-run all jobs**, hoặc chạy workflow thủ công cho nhánh. Minh chứng API nằm tại [github_ci_status.json](../output/evidence/github_ci_status.json). Bộ kiểm thử local đạt **32/32**, mã thoát 0; log Spark Windows được giữ nguyên.
+Ngày 16/11/2026, [run 43798469228](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228) cho commit `ba17761` bị GitHub chặn trước khi chạy job vì tài khoản chủ repository bị khóa do billing. Không có step nào được thực thi. Chủ repository xử lý phần tài khoản rồi chọn **Re-run all jobs**, hoặc chạy workflow thủ công cho nhánh. Minh chứng API nằm tại [github_ci_status.json](../output/evidence/github_ci_status.json). Bộ kiểm thử local đạt **34/34**, mã thoát 0; log Spark Windows được giữ nguyên.
 
 ## Bổ sung trong nhánh rà soát
 

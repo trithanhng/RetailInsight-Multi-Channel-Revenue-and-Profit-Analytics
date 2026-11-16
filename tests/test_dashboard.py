@@ -18,6 +18,23 @@ def test_defaults_are_compact_and_financial_totals_are_correct():
     assert ui.metric[3].value == '+36,50%'
 
 
+def test_reset_does_not_show_duplicate_date_default_warning(monkeypatch):
+    from streamlit.elements.lib import policies
+    monkeypatch.setattr(policies, '_shown_default_value_warning', False)
+    ui = app().selectbox(key='channel').set_value('Internet').run()
+    ui.button(key='reset_filters').click().run()
+    assert not ui.exception
+    assert not ui.warning
+    assert ui.metric[0].value == '109,81 triệu'
+
+
+def test_clearing_a_date_requests_a_complete_range():
+    ui = app().date_input(key='date_start').set_value(None).run()
+    assert not ui.exception
+    assert ui.warning
+    assert not ui.metric
+
+
 def test_channel_filter_updates_the_same_financial_scope():
     ui = app().selectbox(key='channel').set_value('Internet').run()
     assert not ui.exception

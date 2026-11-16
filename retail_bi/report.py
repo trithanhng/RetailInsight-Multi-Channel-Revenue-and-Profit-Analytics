@@ -164,7 +164,7 @@ def build_markdown_report(output=ROOT / 'docs/BAO_CAO.md'):
         'Hướng dẫn chạy: [README](../README.md). Demo: [DEMO.md](DEMO.md). Log và dữ liệu mẫu: [output/evidence](../output/evidence).', '',
         f'[Repository dự án]({PROJECT_REPO}); nhánh triển khai `feat/assignment-completion-20261116`. '
         'Trạng thái CI cần kiểm tra trên đúng commit ở GitHub Actions. '
-        'Giới hạn minh chứng giao diện được ghi tại [bản rà soát](COMPLIANCE_REVIEW.md).', '',
+        'Ảnh giao diện thật và xác nhận từng bước: [SCREENSHOT_REVIEW.md](SCREENSHOT_REVIEW.md).', '',
         '## 8 Nguồn và công cụ AI', '',
         '[Microsoft AdventureWorksDW](DATA_SOURCES.md); MIT license được giữ nguyên trong evidence. '
         '[Công cụ AI và trách nhiệm học thuật](AI_USAGE.md). Dữ liệu, số đo và hình dữ liệu đều có nguồn; '
@@ -399,7 +399,8 @@ def build_report(output=ROOT / 'output' / 'Bao_cao_pipeline_dashboard.pdf'):
     p('Bộ kiểm thử giao diện bổ sung việc đổi danh mục đặt lại sản phẩm, chọn kỳ chung hai kênh, '
       'ngày đảo chiều, tổ hợp không có giao dịch, sản phẩm lỗ, phạm vi hẹp và nút đặt lại. '
       'CSV được kiểm tra công thức USD, tiêu đề công khai và phạm vi lọc. '
-      'Trang tổng quan đã được kiểm tra trực tiếp trên Chrome; tự động thao tác trình duyệt bị giới hạn xác minh URL trên Windows.')
+      'Đã chụp 9 ảnh giao diện thật trên Chrome và xác nhận KPI, các trang phân tích, lọc Internet và reset. '
+      'Chi tiết và giới hạn kiểm tra nằm trong docs/SCREENSHOT_REVIEW.md; ảnh tại docs/screenshots.')
     p('Chạy lại bằng setup.cmd và run.cmd theo README. Mã nguồn, SQL, dữ liệu mẫu đầu ra, log, '
       'manifest, bảng benchmark và kịch bản demo được bàn giao cùng thư mục. '
       'Bộ ZIP GitHub loại dữ liệu thô, môi trường ảo, cache và tài liệu giao đề gốc. '
