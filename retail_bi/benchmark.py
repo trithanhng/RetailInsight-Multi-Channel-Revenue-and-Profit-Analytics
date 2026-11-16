@@ -28,7 +28,7 @@ def spark_session():
         raise RuntimeError('Cần JAVA_HOME trỏ tới JDK 17+; xem README.md')
     scratch = ROOT / '.cache' / 'spark'
     scratch.mkdir(parents=True, exist_ok=True)
-    session = (SparkSession.builder.master('local[2]').appName('AdventureWorksCO4033')
+    session = (SparkSession.builder.master('local[2]').appName('RetailInsightBenchmark')
         .config('spark.ui.enabled', 'false')
         .config('spark.driver.host', '127.0.0.1')
         .config('spark.sql.shuffle.partitions', '4')

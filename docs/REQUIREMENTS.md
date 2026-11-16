@@ -1,6 +1,6 @@
-# Đối chiếu yêu cầu đề tài 01
+# Phạm vi chức năng và tiêu chí kiểm chứng
 
-Căn cứ mục II và phần ĐỀ TÀI 01 trong tài liệu giao bài CO4033. Bản kỹ thuật không gán tên hoặc tỷ lệ đóng góp cá nhân.
+Tài liệu ánh xạ các yêu cầu phân tích bán lẻ đa kênh với mã nguồn, kết quả thực thi và tài liệu tương ứng.
 
 | Yêu cầu | Minh chứng |
 |---|---|
@@ -22,9 +22,9 @@ Căn cứ mục II và phần ĐỀ TÀI 01 trong tài liệu giao bài CO4033. 
 | Log và mẫu đầu ra | output/evidence; --verify lưu mã thoát và stdout thực |
 | Hình minh chứng | 9 ảnh cửa sổ Chrome thật và bảng xác nhận tại docs/SCREENSHOT_REVIEW.md; biểu đồ từ mart được phân biệt với ảnh UI |
 | Liên kết repository | [RetailInsight](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics); nhánh feat/assignment-completion-20261116 |
-| Ghi công cụ AI và giới hạn học thuật | docs/AI_USAGE.md; phần phương pháp trong báo cáo |
+| Minh bạch việc sử dụng công cụ AI | docs/AI_USAGE.md; phần phương pháp trong báo cáo |
 
-Không khẳng định hệ thống đã đạt quy mô Big Data hoặc mọi điều kiện nộp lớp đã hoàn tất khi đóng góp học thuật chưa được nhóm xác nhận. Bản mã nguồn, dashboard, báo cáo, ảnh thật và phép đo được kiểm chứng riêng với các phần phụ thuộc hình thức nộp.
+Phạm vi kiểm chứng hiện tại là môi trường local. Các phép đo không chứng minh khả năng mở rộng trên cụm phân tán hoặc mức sẵn sàng vận hành production. Trạng thái CI và giới hạn kiểm tra giao diện được ghi riêng trong biên bản rà soát.
 
 
 Rà soát ngày 16/11/2026 và trạng thái các minh chứng: [COMPLIANCE_REVIEW.md](COMPLIANCE_REVIEW.md).

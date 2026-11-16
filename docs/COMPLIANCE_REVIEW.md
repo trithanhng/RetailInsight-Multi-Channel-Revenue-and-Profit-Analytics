@@ -1,6 +1,6 @@
-# Rà soát yêu cầu CO4033 đề tài 01
+# Biên bản rà soát kỹ thuật
 
-Ngày rà soát: 16/11/2026. Căn cứ mục II và phần ĐỀ TÀI 01 của hai tài liệu giao bài đã cung cấp. Repository gốc tại thời điểm kiểm tra chỉ có README, CSV nguồn và thư mục dự kiến; nhánh `feat/assignment-completion-20261116` bổ sung bản triển khai hoàn chỉnh để nhóm xem và merge.
+Ngày rà soát: 16/11/2026. Phạm vi: pipeline dữ liệu, độ chính xác KPI, dashboard, benchmark và khả năng tái lập. Mã triển khai nằm trên nhánh `feat/assignment-completion-20261116`.
 
 ## Kết quả đối chiếu
 
@@ -21,11 +21,11 @@ Ngày rà soát: 16/11/2026. Căn cứ mục II và phần ĐỀ TÀI 01 của h
 | Log chạy pipeline và minh chứng chất lượng | Mỗi run có pipeline.log thực thi; output/evidence chứa pipeline.log, test_status, log kiểm thử, CSV và manifest |
 | URL repository | https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics |
 
-## Các điểm chưa thể tự xác nhận thay sinh viên
+## Trạng thái kiểm chứng và giới hạn
 
 1. **Ảnh dashboard — đã bổ sung:** ngày 16/11/2026 lưu 9 ảnh cửa sổ Chrome thật, gồm tổng quan, nhận xét, kênh, vùng, sản phẩm, chất lượng, benchmark, lọc Internet và reset. Xem [xác nhận từng bước](SCREENSHOT_REVIEW.md). Không còn thiếu bộ ảnh; phạm vi quan sát desktop và giới hạn kiểm tra được ghi rõ.
-2. **Phân công/đóng góp cá nhân:** chưa ghi tên và tỷ lệ vì người dùng đã yêu cầu bỏ qua khâu này; không tự suy đoán. Nếu giảng viên yêu cầu trong bản nộp cuối, nhóm tự xác nhận đóng góp thực tế.
-3. **Liêm chính học thuật:** đã khai báo AI. Điều kiện đề bài “không nộp sản phẩm được AI tạo toàn bộ hoặc phần lớn” cần sinh viên tự đáp ứng qua việc hiểu, chỉnh sửa và đóng góp; số test đạt không chứng minh điều kiện này.
+2. **Môi trường vận hành:** đã kiểm chứng local; chưa kiểm tra triển khai phân tán, thiết bị di động, tải đồng thời hoặc xác thực cho dịch vụ công khai.
+3. **Nguồn và phương pháp:** dữ liệu Microsoft là mẫu giả lập; chi phí dùng giá vốn, chưa đủ để tính lợi nhuận ròng. Việc sử dụng AI được mô tả tại [AI_USAGE.md](AI_USAGE.md).
 4. **CI trên GitHub:** đã push và kiểm tra [run 43798469228](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228) của commit `ba17761`. GitHub báo “The job was not started because your account is locked due to a billing issue.” Job chưa chạy bước nào. Chủ repository cần xử lý billing/account rồi chạy lại workflow; không thể kết luận CI đạt từ 32 test local. Xem [minh chứng](../output/evidence/github_ci_status.json).
 
-Các yêu cầu kỹ thuật đã có mã và bằng chứng tái lập. Chưa khẳng định hồ sơ đáp ứng 100% điều kiện nộp bài khi các mục cần xác nhận trực tiếp ở trên chưa hoàn thành.
+Các chức năng có mã nguồn và bằng chứng tái lập tương ứng. Trạng thái local, CI và khả năng triển khai được đánh giá riêng; kết quả kiểm thử không được dùng để suy ra mức sẵn sàng production.

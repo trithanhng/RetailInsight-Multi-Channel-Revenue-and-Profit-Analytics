@@ -1,7 +1,7 @@
-# Công cụ AI và trách nhiệm học thuật
+# Sử dụng công cụ AI
 
 ChatGPT/Codex hỗ trợ đọc yêu cầu, đề xuất thiết kế, viết và sửa mã, sinh kiểm thử, rà soát độc lập bằng tác nhân AI, đối chiếu dữ liệu, soạn tài liệu và báo cáo.
 
 Số liệu trong sản phẩm được tính từ Microsoft AdventureWorksDW hoặc đo bằng chương trình thực thi. Dữ liệu thử tải là bản sao được khai báo riêng. Không tạo số đo hiệu năng, ảnh dashboard hoặc thông tin đóng góp cá nhân giả.
 
-Đề bài yêu cầu công khai AI và không nộp sản phẩm được AI tạo toàn bộ hoặc phần lớn. Sinh viên cần tự chạy, hiểu, đánh giá và chỉnh sửa phần đóng góp của mình trước khi nộp. Kiểm thử đạt không thay thế trách nhiệm giải thích phương pháp hoặc yêu cầu liêm chính của học phần.
+Mọi thay đổi cần được rà soát và kiểm chứng trước khi tích hợp. Kiểm thử tự động giúp phát hiện sai lệch nhưng không thay thế việc đánh giá giả định kinh doanh, giới hạn dữ liệu và tính phù hợp với môi trường triển khai. Đầu ra do AI hỗ trợ không được coi là bằng chứng thực thi nếu chưa có log hoặc phép đo tương ứng.

@@ -87,7 +87,7 @@ def build_markdown_report(output=ROOT / 'docs/BAO_CAO.md'):
     category = fact.groupby('category')[['revenue_units', 'profit_units']].sum()
     lines = [
         '# Phân tích doanh thu và lợi nhuận bán lẻ đa kênh', '',
-        'Báo cáo kỹ thuật CO4033 — đề tài 01. Nguồn Microsoft AdventureWorksDW, dữ liệu doanh nghiệp **giả lập**, giấy phép MIT.', '',
+        'Báo cáo kỹ thuật RetailInsight. Nguồn Microsoft AdventureWorksDW, dữ liệu doanh nghiệp **giả lập**, giấy phép MIT.', '',
         '## 1 Bài toán và phạm vi', '',
         'Người dùng cuối là quản lý bán hàng và tài chính. Hai câu hỏi: kênh doanh thu cao có đồng thời tạo hiệu quả giá vốn cao không; danh mục/vùng nào đóng góp lợi nhuận gộp đáng ưu tiên kiểm tra?', '',
         f'Phạm vi: {len(fact):,} dòng bán hàng, {total["orders"]:,} đơn, {manifest["date_min"][:10]} đến {manifest["date_max"][:10]}. '
@@ -167,8 +167,8 @@ def build_markdown_report(output=ROOT / 'docs/BAO_CAO.md'):
         'Ảnh giao diện thật và xác nhận từng bước: [SCREENSHOT_REVIEW.md](SCREENSHOT_REVIEW.md).', '',
         '## 8 Nguồn và công cụ AI', '',
         '[Microsoft AdventureWorksDW](DATA_SOURCES.md); MIT license được giữ nguyên trong evidence. '
-        '[Công cụ AI và trách nhiệm học thuật](AI_USAGE.md). Dữ liệu, số đo và hình dữ liệu đều có nguồn; '
-        'không gán tên hoặc tỷ lệ đóng góp cá nhân trong bản báo cáo kỹ thuật này.', '']
+        '[Sử dụng công cụ AI](AI_USAGE.md). Dữ liệu, số đo và hình minh họa có nguồn truy vết. '
+        'Kết quả cần được kiểm chứng lại trên môi trường triển khai trước khi sử dụng để ra quyết định.', '']
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text('\n'.join(lines), encoding='utf-8')
@@ -214,7 +214,7 @@ def build_report(output=ROOT / 'output' / 'Bao_cao_pipeline_dashboard.pdf'):
     comparison_month, month_kpi = growth['period'], growth['growth_pct']
     p('Phân tích doanh thu và lợi nhuận bán lẻ đa kênh', 'TitleVN')
     p('Báo cáo triển khai pipeline và dashboard', 'HeadingVN')
-    p('CO4033 · Đề tài 01 · Microsoft AdventureWorksDW · Phiên bản bàn giao tháng 11/2026', 'SmallVN')
+    p('RetailInsight · Microsoft AdventureWorksDW · Báo cáo kỹ thuật tháng 11/2026', 'SmallVN')
     p('Pipeline đã nạp hai kênh Internet và Reseller từ nguồn Microsoft, tạo data mart, '
       'tổng hợp bằng Spark SQL và dashboard có bộ lọc. Báo cáo dùng kết quả đo thực trên máy triển khai. '
       'AdventureWorks là dữ liệu doanh nghiệp <b>giả lập</b> do Microsoft cung cấp; các con số không mô tả thị trường thực tế.')
@@ -403,14 +403,13 @@ def build_report(output=ROOT / 'output' / 'Bao_cao_pipeline_dashboard.pdf'):
       'Chi tiết và giới hạn kiểm tra nằm trong docs/SCREENSHOT_REVIEW.md; ảnh tại docs/screenshots.')
     p('Chạy lại bằng setup.cmd và run.cmd theo README. Mã nguồn, SQL, dữ liệu mẫu đầu ra, log, '
       'manifest, bảng benchmark và kịch bản demo được bàn giao cùng thư mục. '
-      'Bộ ZIP GitHub loại dữ liệu thô, môi trường ảo, cache và tài liệu giao đề gốc. '
+      'Gói phân phối ZIP loại dữ liệu thô, môi trường ảo, cache và tài liệu ngoài phạm vi dự án. '
       'Mã được chuẩn bị trên nhánh feat/assignment-completion-20261116 của repository dự án. '
       'Trạng thái CI phải đối chiếu trên đúng commit tại GitHub Actions.')
     heading('Khả năng tái lập và sử dụng công cụ AI')
-    p('ChatGPT/Codex hỗ trợ đọc đề, thiết kế mã, sinh kiểm thử, phân tích và soạn tài liệu. '
-      'Đề bài yêu cầu ghi rõ AI và không nộp sản phẩm do AI tạo toàn bộ hoặc phần lớn. '
-      'Sinh viên cần tự chạy lại, hiểu công thức, sửa và hoàn thiện nội dung trước khi nộp. '
-      'Báo cáo kỹ thuật này không gán tên hoặc tỷ lệ đóng góp cho cá nhân.')
+    p('ChatGPT/Codex hỗ trợ phân tích yêu cầu, thiết kế và rà soát mã, tạo kiểm thử và soạn tài liệu. '
+      'Số liệu kinh doanh được tính từ nguồn Microsoft; thời gian thực thi được đo bằng chương trình. '
+      'Cần kiểm chứng đầu ra, giả định và giới hạn trên môi trường đích trước khi sử dụng kết quả.')
     heading('Nguồn tham khảo')
     for text, url in [
         ('RetailInsight — repository dự án', PROJECT_REPO),
@@ -420,19 +419,19 @@ def build_report(output=ROOT / 'output' / 'Bao_cao_pipeline_dashboard.pdf'):
         ('Microsoft Analysis Services AdventureWorks model', 'https://github.com/microsoft/Analysis-Services/blob/master/AsPartitionProcessing/AsPartitionProcessing.AdventureWorks/Model.bim'),
         ('PySpark 4.0.1 installation', 'https://spark.apache.org/docs/4.0.1/api/python/getting_started/install.html')]:
         p(f'<link href="{escape(url)}" color="#143957">{escape(text)}</link>', 'SmallVN')
-    p('Yêu cầu đối chiếu: mục II và ĐỀ TÀI 01 trong tài liệu giao bài CO4033. '
-      'Các tài liệu gốc được giữ ở máy làm việc; không tự động tái phát hành trong gói mã nguồn.', 'SmallVN')
+    p('Phạm vi chức năng và minh chứng: docs/REQUIREMENTS.md. '
+      'Trạng thái kiểm chứng và giới hạn: docs/COMPLIANCE_REVIEW.md.', 'SmallVN')
 
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     def footer(canvas, doc):
         canvas.setFont('Report', 8)
         canvas.setFillColor(NAVY)
-        canvas.drawString(2*cm, 1.1*cm, 'CO4033 · Pipeline và dashboard · AdventureWorksDW')
+        canvas.drawString(2*cm, 1.1*cm, 'RetailInsight · Pipeline và dashboard · AdventureWorksDW')
         canvas.drawRightString(A4[0]-2*cm, 1.1*cm, str(doc.page))
     SimpleDocTemplate(str(output), pagesize=A4, rightMargin=2*cm, leftMargin=2*cm,
         topMargin=1.8*cm, bottomMargin=1.8*cm, title='Pipeline và dashboard doanh thu lợi nhuận đa kênh',
-        author='Nhóm CO4033').build(story, onFirstPage=footer, onLaterPages=footer)
+        author='RetailInsight Contributors').build(story, onFirstPage=footer, onLaterPages=footer)
     print(f'Created {output}', flush=True)
     return output
 

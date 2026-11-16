@@ -1,6 +1,6 @@
 # Phân tích doanh thu và lợi nhuận bán lẻ đa kênh
 
-Báo cáo kỹ thuật CO4033 — đề tài 01. Nguồn Microsoft AdventureWorksDW, dữ liệu doanh nghiệp **giả lập**, giấy phép MIT.
+Báo cáo kỹ thuật RetailInsight. Nguồn Microsoft AdventureWorksDW, dữ liệu doanh nghiệp **giả lập**, giấy phép MIT.
 
 ## 1 Bài toán và phạm vi
 
@@ -95,4 +95,4 @@ Các ca kiểm thử, phương pháp đối chiếu và giới hạn kiểm tra 
 
 ## 8 Nguồn và công cụ AI
 
-[Microsoft AdventureWorksDW](DATA_SOURCES.md); MIT license được giữ nguyên trong evidence. [Công cụ AI và trách nhiệm học thuật](AI_USAGE.md). Dữ liệu, số đo và hình dữ liệu đều có nguồn; không gán tên hoặc tỷ lệ đóng góp cá nhân trong bản báo cáo kỹ thuật này.
+[Microsoft AdventureWorksDW](DATA_SOURCES.md); MIT license được giữ nguyên trong evidence. [Sử dụng công cụ AI](AI_USAGE.md). Dữ liệu, số đo và hình minh họa có nguồn truy vết. Kết quả cần được kiểm chứng lại trên môi trường triển khai trước khi sử dụng để ra quyết định.

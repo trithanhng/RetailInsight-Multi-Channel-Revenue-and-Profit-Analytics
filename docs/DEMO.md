@@ -9,6 +9,6 @@ Chuẩn bị bằng `run.cmd all`, sau đó `run.cmd dashboard`. Muốn có th�
 5. **Benchmark — 1 phút.** Mở Dữ liệu và kiểm chứng → Hiệu năng và ba SQL. Cùng dữ liệu/phép tính, 3 lượt đo, JVM riêng, cache OS không xóa, kết quả khớp từng nhóm. pandas nhanh hơn ở quy mô local; không suy ra kết luận cho cụm phân tán. Tải 5× chỉ là bản sao thử tải.
 6. **Quyết định và kiểm thử — 1 phút.** Rà soát chiết khấu/giá vốn Reseller; thử ngân sách có kiểm soát ở Internet; kiểm tra khả năng cung ứng Bikes. Nêu điều kiện marketing, vận hành, tồn kho còn thiếu. Mở log kiểm thử và khai báo AI.
 
-Khi trình bày trực tiếp, có thể chụp trang Tổng quan, một phạm vi đã lọc và trang Hiệu năng để bổ sung hồ sơ lớp. Các hình tổng hợp trong báo cáo là hình dữ liệu được sinh từ mart, không gắn nhãn là ảnh chụp dashboard.
+Bộ ảnh tham chiếu và các thao tác đã xác nhận được lưu tại [SCREENSHOT_REVIEW.md](SCREENSHOT_REVIEW.md). Các biểu đồ tổng hợp trong báo cáo được sinh từ mart và phân biệt rõ với ảnh chụp dashboard.
 
 Cần giải thích được vì sao không trừ DiscountAmount hai lần, không lấy trung bình biên từng dòng, không cộng số đơn giữa các nhóm nhiều danh mục, và không bỏ các giao dịch lỗ.

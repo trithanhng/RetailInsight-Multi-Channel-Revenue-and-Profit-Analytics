@@ -1,27 +1,47 @@
 # RetailInsight — Multi-Channel Revenue and Profit Analytics
 
-**Phân tích doanh thu và lợi nhuận bán lẻ đa kênh — CO4033, đề tài 01.**
+**Pipeline dữ liệu và dashboard phân tích hiệu quả bán lẻ đa kênh.**
 
 Dự án xây dựng quy trình từ dữ liệu nguồn đến dashboard phục vụ quản lý bán hàng và tài chính. Hai câu hỏi chính: kênh doanh thu cao có đồng thời sinh lợi cao không; danh mục và vùng nào đáng ưu tiên kiểm tra để cải thiện hiệu quả?
 
 Pipeline nạp dữ liệu Microsoft AdventureWorksDW, kiểm tra chất lượng, tạo data mart Parquet, tổng hợp bằng Spark SQL và đối chiếu với pandas. Dashboard Streamlit cho phép lọc và tải kết quả phân tích bằng tiếng Việt.
 
-**Lưu ý nguồn:** AdventureWorks là dữ liệu doanh nghiệp **giả lập** do Microsoft cung cấp, giấy phép MIT. Kết quả dùng cho học tập và kiểm chứng kỹ thuật, không đại diện thị trường thực tế.
+**Nguồn dữ liệu:** AdventureWorks là dữ liệu doanh nghiệp **giả lập** do Microsoft cung cấp theo giấy phép MIT. Các kết quả phục vụ minh họa phân tích và kiểm chứng kỹ thuật, không đại diện cho thị trường thực tế.
 
-[Báo cáo PDF](output/Bao_cao_pipeline_dashboard.pdf) · [Báo cáo đọc trên GitHub](docs/BAO_CAO.md) · [Nguồn dữ liệu và link tải](docs/DATA_SOURCES.md) · [Đối chiếu yêu cầu](docs/REQUIREMENTS.md) · [Demo](docs/DEMO.md)
+[Báo cáo kỹ thuật](docs/BAO_CAO.md) · [Báo cáo PDF](output/Bao_cao_pipeline_dashboard.pdf) · [Nguồn dữ liệu](docs/DATA_SOURCES.md) · [Kiểm chứng](docs/VALIDATION.md) · [Demo](docs/DEMO.md)
+
+## Nội dung
+
+- [Dashboard](#dashboard)
+- [Cài đặt và khởi chạy](#cài-đặt-và-khởi-chạy)
+- [Dữ liệu và kết quả tham chiếu](#dữ-liệu-và-kết-quả-tham-chiếu)
+- [Kiến trúc](#kiến-trúc)
+- [Công thức KPI](#công-thức-kpi)
+- [Tái lập thực nghiệm](#tái-lập-thực-nghiệm)
+- [Cấu trúc repository](#cấu-trúc-repository)
+- [Kiểm thử và giới hạn](#kiểm-thử-và-giới-hạn)
+- [Tài liệu và giấy phép](#tài-liệu-và-giấy-phép)
 
 ## Dashboard
 
-[9 ảnh dashboard thật và xác nhận từng bước](docs/SCREENSHOT_REVIEW.md).
+![Dashboard RetailInsight](docs/screenshots/01-overview.png)
+
+[Xem bộ ảnh và biên bản kiểm tra giao diện](docs/SCREENSHOT_REVIEW.md). Ảnh được chụp tại thời điểm kiểm chứng; bố cục có thể khác giữa các phiên bản.
 
 - **Tổng quan:** doanh thu, lợi nhuận gộp, biên gộp, tăng trưởng tháng, xu hướng và nhận xét theo bộ lọc.
 - **Kênh và thị trường:** so sánh Internet/Reseller, hiệu quả vùng, bảng và CSV bằng USD.
 - **Sản phẩm:** tìm theo danh mục, xếp hạng lợi nhuận cao/thấp, giữ cả sản phẩm lỗ.
 - **Dữ liệu và kiểm chứng:** chất lượng trước–sau, benchmark, công thức và truy vết nguồn.
 
-Thanh bên có lựa chọn **Tất cả**, khoảng ngày, kỳ chung hai kênh, bộ lọc kênh/vùng/danh mục và tìm sản phẩm. Thay đổi bộ lọc cập nhật đồng thời KPI, biểu đồ, bảng và CSV. Có nút đặt lại; dữ liệu rỗng hoặc ngày đảo chiều được xử lý rõ ràng.
+Thanh bên hỗ trợ khoảng ngày, kỳ chung hai kênh, kênh bán, vùng, danh mục, đại lý và sản phẩm. Thay đổi bộ lọc cập nhật đồng thời KPI, biểu đồ, bảng và CSV kinh doanh. Trang kiểm chứng sử dụng toàn bộ run và được ghi nhãn riêng. Có nút đặt lại và thông báo cho ngày thiếu, ngày đảo chiều hoặc phạm vi không có dữ liệu.
 
-## Chạy nhanh
+## Cài đặt và khởi chạy
+
+```bash
+git clone https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics.git
+cd RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics
+git switch feat/assignment-completion-20261116
+```
 
 Yêu cầu: **Python 3.11 hoặc 3.12**, **JDK 17+**, `JAVA_HOME` trỏ đến JDK. Không cần SQL Server, SSMS, Docker, Hadoop/HDFS, Power BI hoặc tài khoản Kaggle.
 
@@ -53,7 +73,7 @@ python -m streamlit run dashboard.py
 
 Xuất PDF tiếng Việt cần Arial trên Windows hoặc DejaVu Sans trên Linux (`fonts-dejavu-core`). macOS có thể cung cấp cặp font hợp lệ trong `assets/fonts/`; xem hàm `register_fonts` trong `retail_bi/report.py`.
 
-## Dataset và kết quả toàn kỳ
+## Dữ liệu và kết quả tham chiếu
 
 [**Mở dataset chính thức của Microsoft**](https://github.com/microsoft/sql-server-samples/tree/b47eadc85277f72843647223cde53aa1b85ffcb8/samples/databases/adventure-works/data-warehouse-install-script)
 
@@ -110,14 +130,14 @@ Tiền giữ bằng số nguyên **1/10.000 USD**, chỉ làm tròn khi hiển t
 .\run.cmd load-test    # tùy chọn: 5 bản sao để thử tải
 .\run.cmd test         # kiểm thử và lưu log
 .\run.cmd report       # PDF và hình tổng hợp từ dữ liệu hiện hành
-.\run.cmd package      # minh chứng và ZIP sẵn sàng kiểm tra trước khi publish
+.\run.cmd package      # xuất minh chứng và gói phân phối ZIP
 ```
 
 Benchmark dùng cùng Parquet, cùng cột và phép tổng hợp; mốc đo gồm đọc, tổng hợp, distinct, sắp xếp và trả kết quả. Khởi động JVM đo riêng; không loại lượt đầu và không xóa cache hệ điều hành. Kết quả được so sánh chính xác **từng nhóm**, không chỉ tổng chung.
 
-Trong lượt đo bàn giao, pandas nhanh hơn Spark SQL ở cả dữ liệu gốc và tải mô phỏng 5×. Không kết luận Spark luôn chậm hơn hoặc hệ thống đã đạt quy mô Big Data. Các con số và cấu hình nằm tại [output/evidence](output/evidence); chạy lại có thể cho thời gian khác. Dữ liệu thử tải được tách khỏi phân tích kinh doanh.
+Trong lượt đo tham chiếu, pandas nhanh hơn Spark SQL ở cả dữ liệu gốc và tải mô phỏng 5×. Overhead JVM, lập kế hoạch và thu thập kết quả có thể chi phối ở quy mô local này. Các con số và cấu hình nằm tại [output/evidence](output/evidence); thời gian thay đổi theo môi trường. Dữ liệu thử tải được tách khỏi phân tích kinh doanh. Kết quả không chứng minh khả năng mở rộng trên cụm phân tán.
 
-## Cấu trúc
+## Cấu trúc repository
 
 ```text
 dashboard.py               giao diện Streamlit
@@ -132,15 +152,30 @@ sql/retail/                SQL tổng hợp và phân khúc
 tests/                     kiểm thử đơn vị và tích hợp
 docs/                      báo cáo, nguồn, demo, hướng dẫn GitHub
 output/                    báo cáo PDF, minh chứng và ZIP local
-data/adventureworks/       nguồn và warehouse, không đưa lên Git
+data/raw/                 CSV nguồn Microsoft, schema và giấy phép
+data/adventureworks/       warehouse sinh theo run, không đưa lên Git
 ```
 
-## Kiểm chứng và hồ sơ GitHub
+## Kiểm thử và giới hạn
 
 Kiểm thử bao gồm tiền/chiết khấu, giao dịch lỗ, khóa và phép ghép, tháng trống, phạm vi kỳ tăng trưởng, CSV, thay đổi bộ lọc, reset, dữ liệu rỗng, Spark thực, PDF và gói bàn giao. Chi tiết: [docs/VALIDATION.md](docs/VALIDATION.md).
 
-Có cấu hình GitHub Actions tại `.github/workflows/ci.yml`; kiểm tra kết quả trên đúng commit sau khi push. Repository: [winter-1402/RetailInsight](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics). Quy trình làm việc theo nhánh: [docs/GITHUB.md](docs/GITHUB.md). ZIP loại dữ liệu thô, môi trường ảo, cache, thông tin Git và tài liệu giao đề gốc.
+Workflow GitHub Actions tại `.github/workflows/ci.yml` thực hiện nạp dữ liệu, đối chiếu Spark/pandas, kiểm thử và tạo báo cáo. Kết quả CI cần đối chiếu với đúng commit. Quy trình phát triển: [docs/GITHUB.md](docs/GITHUB.md).
 
-Kiểm chứng ngày 16/11/2026: **34/34 test local đạt**. Lượt Actions đầu tiên bị GitHub chặn trước khi chạy do billing tài khoản chủ repository; xem [kết quả và cách chạy lại](docs/VALIDATION.md). Các điều kiện còn cần nhóm xác nhận khi nộp nằm trong [bản rà soát đầy đủ](docs/COMPLIANCE_REVIEW.md).
+Kết quả tham chiếu ngày 16/11/2026: **34/34 kiểm thử local đạt**. Lượt Actions được ghi nhận bị chặn trước khi chạy do billing của tài khoản chủ repository; xem [trạng thái và cách chạy lại](docs/VALIDATION.md). Kết quả local không thay thế xác nhận CI.
 
-Giấy phép mã: [MIT](LICENSE). Nguồn và giấy phép bên thứ ba: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Công cụ AI và trách nhiệm học thuật được công khai ở [docs/AI_USAGE.md](docs/AI_USAGE.md).
+Phạm vi hiện tại dùng Spark `local[2]`, lưu trữ trên filesystem và phục vụ dashboard local. Chưa kiểm chứng vận hành phân tán, nhiều người dùng đồng thời hoặc triển khai công khai có xác thực. Lợi nhuận gộp chưa bao gồm đầy đủ chi phí vận hành, marketing và hoàn trả.
+
+## Tài liệu và giấy phép
+
+| Tài liệu | Nội dung |
+|---|---|
+| [Nguồn dữ liệu](docs/DATA_SOURCES.md) | Link tải, schema, giấy phép và phạm vi dữ liệu |
+| [Báo cáo kỹ thuật](docs/BAO_CAO.md) | Phương pháp, KPI, thực nghiệm và nhận xét |
+| [Phạm vi chức năng](docs/REQUIREMENTS.md) | Yêu cầu và liên kết minh chứng |
+| [Rà soát kỹ thuật](docs/COMPLIANCE_REVIEW.md) | Trạng thái triển khai và giới hạn |
+| [Kiểm chứng](docs/VALIDATION.md) | Phương pháp kiểm thử, log và môi trường |
+| [Kiểm tra giao diện](docs/SCREENSHOT_REVIEW.md) | Ảnh chụp thực tế và xác nhận từng bước |
+| [Demo](docs/DEMO.md) | Kịch bản kiểm tra ứng dụng |
+
+Mã nguồn được phân phối theo [MIT License](LICENSE). Thông báo bên thứ ba được giữ tại [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Việc sử dụng công cụ AI được công khai tại [docs/AI_USAGE.md](docs/AI_USAGE.md).

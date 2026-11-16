@@ -1,6 +1,6 @@
 # Nguồn dữ liệu AdventureWorksDW
 
-Nguồn duy nhất của bản triển khai là **Microsoft SQL Server Samples / AdventureWorksDW**. Dữ liệu doanh nghiệp giả lập, giấy phép MIT; được dùng đúng tính chất dữ liệu mẫu cho bài tập CO4033.
+Nguồn của bản triển khai là **Microsoft SQL Server Samples / AdventureWorksDW**. Đây là dữ liệu doanh nghiệp giả lập theo giấy phép MIT, dùng để minh họa phân tích và kiểm chứng pipeline.
 
 - [Thư mục dataset đầy đủ](https://github.com/microsoft/sql-server-samples/tree/b47eadc85277f72843647223cde53aa1b85ffcb8/samples/databases/adventure-works/data-warehouse-install-script)
 - [Giới thiệu và cách Microsoft phân phối AdventureWorks](https://github.com/microsoft/sql-server-samples/blob/b47eadc85277f72843647223cde53aa1b85ffcb8/samples/databases/adventure-works/README.md)
@@ -35,6 +35,6 @@ Schema từng bảng, SHA-256, URL và dung lượng được lưu trong `manife
 
 ## Tái sử dụng dữ liệu trong repository
 
-Pipeline đọc các CSV có sẵn tại `data/raw`, tải bổ sung khi thiếu. Các bảng còn lại trong raw là nguồn Microsoft gốc của nhóm nhưng không phải mọi bảng đều tham gia mart. Mã/tên đại lý lấy từ DimReseller, không suy ra cửa hàng từ phương thức thanh toán hoặc vùng. Internet không có cửa hàng vật lý trong dữ liệu này.
+Pipeline đọc các CSV có sẵn tại `data/raw`, tải bổ sung khi thiếu. Thư mục raw chứa thêm các bảng Microsoft ngoài phạm vi mart hiện tại. Mã/tên đại lý lấy từ DimReseller, không suy ra cửa hàng từ phương thức thanh toán hoặc vùng. Internet không có cửa hàng vật lý trong dữ liệu này.
 
 SHA-256 trong manifest ghi nhận byte thực tế trên máy; Git có thể đổi LF/CRLF khi checkout. Kiểm tra nguồn của lượt rà soát đã xác nhận nội dung trùng bản Microsoft được ghim sau khi chuẩn hóa xuống dòng. Pipeline ghi nhận hash thực tế nhưng chưa tự đối chiếu hash chuẩn; nếu thay CSV, cần kiểm tra lại nguồn. Không coi SHA khác do xuống dòng là một thay đổi giao dịch.

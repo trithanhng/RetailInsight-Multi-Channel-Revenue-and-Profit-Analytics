@@ -102,7 +102,7 @@ with st.sidebar:
         'https://github.com/microsoft/sql-server-samples/tree/b47eadc85277f72843647223cde53aa1b85ffcb8/samples/databases/adventure-works/data-warehouse-install-script',
         width='stretch')
 
-st.markdown('<div class="eyebrow">RETAIL PERFORMANCE / CO4033</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">RETAIL PERFORMANCE / ANALYTICS</div>', unsafe_allow_html=True)
 st.title('RetailInsight · Hiệu quả bán hàng')
 st.markdown('<div class="intro">Doanh thu, lợi nhuận gộp và cơ hội cải thiện hiệu quả theo kênh bán.</div>', unsafe_allow_html=True)
 if start > end:
@@ -317,4 +317,4 @@ with evidence_tab:
         st.caption('Phiên bản nguồn: ' + manifest['commit'])
 
 st.markdown('<div class="footer-note">Microsoft AdventureWorksDW · Dữ liệu doanh nghiệp giả lập · '
-    'Tiền tệ báo cáo USD · Lợi nhuận gộp chưa phải lợi nhuận ròng · CO4033, đề tài 01</div>', unsafe_allow_html=True)
+    'Tiền tệ báo cáo USD · Lợi nhuận gộp chưa phải lợi nhuận ròng · RetailInsight</div>', unsafe_allow_html=True)

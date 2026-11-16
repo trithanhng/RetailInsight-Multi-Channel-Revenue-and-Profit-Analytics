@@ -1,1 +1,1 @@
-"""CO4033 đề tài 01 với Microsoft AdventureWorksDW."""
+"""RetailInsight data pipeline and analytics for Microsoft AdventureWorksDW."""
