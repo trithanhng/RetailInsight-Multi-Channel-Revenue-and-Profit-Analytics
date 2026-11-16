@@ -1,0 +1,26 @@
+{
+  "checked_at_utc": "2026-11-16T03:30:27.360998+00:00",
+  "run_id": 43798469228,
+  "commit": "ba17761e70a81de2fd43fd57e952214af8bbc12b",
+  "branch": "feat/assignment-completion-20261116",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228",
+  "jobs": [
+    {
+      "name": "verify",
+      "conclusion": "failure",
+      "steps_executed": 0,
+      "annotations": [
+        {
+          "level": "failure",
+          "message": "The job was not started because your account is locked due to a billing issue."
+        },
+        {
+          "level": "notice",
+          "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+        }
+      ]
+    }
+  ]
+}

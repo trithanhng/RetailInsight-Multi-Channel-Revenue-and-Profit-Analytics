@@ -35,6 +35,8 @@ Windows có thể in cảnh báo native Hadoop và `ERROR: Access denied` lúc d
 
 Kiểm tra GitHub Actions trên đúng commit sau khi push. Kết quả local không thay thế kết quả CI; không dùng badge CI “đạt” trước khi workflow chạy thực tế.
 
+Ngày 16/11/2026, [run 43798469228](https://github.com/winter-1402/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/actions/runs/43798469228) cho commit `ba17761` bị GitHub chặn trước khi chạy job vì tài khoản chủ repository bị khóa do billing. Không có step nào được thực thi. Chủ repository xử lý phần tài khoản rồi chọn **Re-run all jobs**, hoặc chạy workflow thủ công cho nhánh. Minh chứng API nằm tại [github_ci_status.json](../output/evidence/github_ci_status.json). Bộ kiểm thử local đạt **32/32**, mã thoát 0; log Spark Windows được giữ nguyên.
+
 ## Bổ sung trong nhánh rà soát
 
 Kiểm tra DimReseller nhiều-một, mã cửa hàng thiếu đúng nghĩa ở Internet, bộ lọc đại lý và reset. Mẫu bán hàng giữ 10 dòng mỗi kênh; mỗi run có pipeline.log thực thi. Pytest dùng `.pytest-tmp` để không phụ thuộc thư mục cache đã có trên máy.
