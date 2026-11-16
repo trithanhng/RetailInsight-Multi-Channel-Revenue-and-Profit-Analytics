@@ -1,0 +1,9 @@
+FactInternetSales: 60,398 -> 60,398; rejected=0
+FactResellerSales: 60,855 -> 60,855; rejected=0
+DimProduct: 606 -> 606; rejected=0
+DimProductSubcategory: 37 -> 37; rejected=0
+DimProductCategory: 4 -> 4; rejected=0
+DimSalesTerritory: 11 -> 11; rejected=0
+DimCurrency: 105 -> 105; rejected=0
+DimReseller: 701 -> 701; rejected=0
+Published run 20261116T031211470582Z; 7.99s

@@ -1,0 +1,27 @@
+.block-container {max-width: 1500px; padding-top: 2rem; padding-bottom: 2rem;}
+[data-testid="stSidebar"] {background: #fff; border-right: 1px solid #e3eaf2;}
+[data-testid="stSidebar"] .block-container {padding-top: 1.25rem;}
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {gap: .65rem;}
+h1 {font-size: 2rem !important; letter-spacing: -.04em; line-height: 1.2 !important; color: #143957;}
+h2 {font-size: 1.25rem !important; letter-spacing: -.02em;}
+h3 {font-size: 1.08rem !important;}
+.eyebrow {color: #0f766e; font-size: .72rem; font-weight: 750; letter-spacing: .14em; margin-bottom: .5rem;}
+.intro {font-size: .98rem; color: #61758a; margin-bottom: 1.2rem;}
+.scope-line {display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 1rem;}
+.scope-tag {border: 1px solid #dce6ee; background: #fff; padding: .3rem .7rem; border-radius: 999px; font-size: .77rem; color: #405a72;}
+[data-testid="stMetric"] {background: #fff; border: 1px solid #e1e8ef; border-radius: 14px; padding: 1rem 1.1rem; min-height: 108px; box-shadow: 0 3px 12px #183b5610;}
+[data-testid="stMetricLabel"] {color: #61758a; font-size: .85rem;}
+[data-testid="stMetricValue"] {color: #143957; font-weight: 720; font-size: 1.75rem; letter-spacing: -.035em;}
+[data-testid="stMetricDelta"] {font-size: .73rem;}
+button[data-baseweb="tab"] {font-size: .92rem; font-weight: 600; padding: .8rem 1rem;}
+div[data-testid="stPlotlyChart"] {background: #fff; border: 1px solid #e1e8ef; border-radius: 14px; overflow: hidden;}
+.insight {border-top: 3px solid #0f766e; background: #fff; border-radius: 10px; padding: 1rem; min-height: 165px; border-left: 1px solid #e1e8ef; border-right: 1px solid #e1e8ef; border-bottom: 1px solid #e1e8ef;}
+.insight-label {font-size: .72rem; font-weight: 700; color: #0f766e; text-transform: uppercase; letter-spacing: .08em;}
+.insight-title {font-size: 1.05rem; font-weight: 700; margin: .45rem 0; color: #19324b;}
+.insight p {font-size: .85rem; color: #61758a; line-height: 1.55; margin-bottom: 0;}
+.footer-note {font-size: .76rem; color: #73869a; border-top: 1px solid #e1e8ef; padding-top: 1rem; margin-top: 1.5rem;}
+@media (max-width: 900px) {
+  h1 {font-size: 1.6rem !important;}
+  .block-container {padding: 1.2rem 1rem;}
+  [data-testid="stMetricValue"] {font-size: 1.35rem;}
+}

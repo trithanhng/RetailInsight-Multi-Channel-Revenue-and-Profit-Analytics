@@ -219,3 +219,24 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# RetailInsight generated artifacts
+.pytest-tmp/
+.venv/
+__pycache__/
+.pytest_cache/
+.cache/
+data/
+artifacts/runs/
+*.log
+!output/evidence/*.log
+output/*.zip
+/*.docx
+/*.tmp
+docs/local/
+~$*
+.env
+kaggle.json
+.streamlit/secrets.toml
+*.key
+*.pem
