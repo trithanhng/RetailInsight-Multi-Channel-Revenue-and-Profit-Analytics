@@ -64,14 +64,14 @@ Mở **http://127.0.0.1:8501**. Nếu đã có dữ liệu và môi trường, c
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python -m retail_bi.pipeline --download
-python -m retail_bi.benchmark --repeats 3
-python -m retail_bi.report
-python -m retail_bi.delivery --verify --package
-python -m streamlit run dashboard.py
+python -m src.pipeline.retail --download
+python -m src.pipeline.benchmark --repeats 3
+python -m src.utils.report
+python -m src.utils.delivery --verify --package
+python -m streamlit run dashboard/dashboard.py
 ```
 
-Xuất PDF tiếng Việt cần Arial trên Windows hoặc DejaVu Sans trên Linux (`fonts-dejavu-core`). macOS có thể cung cấp cặp font hợp lệ trong `assets/fonts/`; xem hàm `register_fonts` trong `retail_bi/report.py`.
+Xuất PDF tiếng Việt cần Arial trên Windows hoặc DejaVu Sans trên Linux (`fonts-dejavu-core`). macOS có thể cung cấp cặp font hợp lệ trong `assets/fonts/`; xem hàm `register_fonts` trong `src/utils/report.py`.
 
 ## Dữ liệu và kết quả tham chiếu
 
@@ -140,20 +140,27 @@ Trong lượt đo tham chiếu, pandas nhanh hơn Spark SQL ở cả dữ liệu
 ## Cấu trúc repository
 
 ```text
-dashboard.py               giao diện Streamlit
-assets/dashboard.css       giao diện và bố cục thích ứng
-.streamlit/config.toml     chủ đề và cấu hình local
-retail_bi/pipeline.py       tải nguồn, chất lượng, mart, lineage
-retail_bi/analytics.py      bộ lọc, KPI tháng, tổng hợp, CSV
-retail_bi/benchmark.py      Spark SQL và baseline
-retail_bi/report.py         báo cáo PDF và hình dữ liệu
-retail_bi/delivery.py       log kiểm thử, minh chứng và ZIP
-sql/retail/                SQL tổng hợp và phân khúc
-tests/                     kiểm thử đơn vị và tích hợp
-docs/                      báo cáo, nguồn, demo, hướng dẫn GitHub
-output/                    báo cáo PDF, minh chứng và ZIP local
-data/raw/                 CSV nguồn Microsoft, schema và giấy phép
-data/adventureworks/       warehouse sinh theo run, không đưa lên Git
+dashboard/
+├── dashboard.py            giao diện Streamlit
+└── assets/dashboard.css    giao diện và bố cục thích ứng
+src/
+├── ingestion/source.py     tải nguồn ghim phiên bản, đọc schema SQL
+├── cleaning/source.py      chuẩn hóa, kiểm tra và cách ly bản ghi lỗi
+├── pipeline/
+│   ├── retail.py           ghép chiều, dựng mart, công bố run và lineage
+│   ├── analytics.py        bộ lọc, KPI tháng, tổng hợp, CSV
+│   └── benchmark.py        Spark SQL và pandas baseline
+└── utils/
+    ├── config.py           đường dẫn dự án và đơn vị tiền dùng chung
+    ├── report.py           báo cáo PDF và hình dữ liệu
+    └── delivery.py         log kiểm thử, minh chứng và ZIP
+.streamlit/config.toml      chủ đề và cấu hình local
+sql/retail/                 SQL tổng hợp và phân khúc
+tests/                      kiểm thử đơn vị và tích hợp
+docs/                       báo cáo, nguồn, demo, hướng dẫn GitHub
+output/                     báo cáo PDF, minh chứng và ZIP local
+data/raw/                   CSV nguồn Microsoft, schema và giấy phép
+data/adventureworks/         warehouse sinh theo run, không đưa lên Git
 ```
 
 ## Kiểm thử và giới hạn

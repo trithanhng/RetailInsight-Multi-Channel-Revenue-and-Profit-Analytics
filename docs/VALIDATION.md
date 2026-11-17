@@ -10,7 +10,7 @@
 
 ## Kiểm thử tự động
 
-`python -m pytest -q` chạy toàn bộ test. `python -m retail_bi.delivery --verify` lưu stdout/stderr thực và mã thoát vào `output/evidence/tests.log` và `test_status.json`.
+`python -m pytest -q` chạy toàn bộ test. `python -m src.utils.delivery --verify` lưu stdout/stderr thực và mã thoát vào `output/evidence/tests.log` và `test_status.json`.
 
 | File | Phạm vi |
 |---|---|

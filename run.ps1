@@ -12,13 +12,13 @@ function Invoke-TaskPython {
     & $taskPython @args
     if ($LASTEXITCODE -ne 0) { throw 'Python task failed; inspect output above' }
 }
-if ($Task -in @('all','pipeline')) { Invoke-TaskPython @('-m','retail_bi.pipeline','--download') }
-if ($Task -in @('all','benchmark')) { Invoke-TaskPython @('-m','retail_bi.benchmark','--repeats','3') }
-if ($Task -eq 'load-test') { Invoke-TaskPython @('-m','retail_bi.benchmark','--scale','5','--repeats','3') }
-if ($Task -in @('all','report')) { Invoke-TaskPython @('-m','retail_bi.report') }
-if ($Task -eq 'test') { Invoke-TaskPython @('-m','retail_bi.delivery','--verify') }
-if ($Task -eq 'package') { Invoke-TaskPython @('-m','retail_bi.delivery','--package') }
-if ($Task -eq 'all') { Invoke-TaskPython @('-m','retail_bi.delivery','--verify','--package') }
+if ($Task -in @('all','pipeline')) { Invoke-TaskPython @('-m','src.pipeline.retail','--download') }
+if ($Task -in @('all','benchmark')) { Invoke-TaskPython @('-m','src.pipeline.benchmark','--repeats','3') }
+if ($Task -eq 'load-test') { Invoke-TaskPython @('-m','src.pipeline.benchmark','--scale','5','--repeats','3') }
+if ($Task -in @('all','report')) { Invoke-TaskPython @('-m','src.utils.report') }
+if ($Task -eq 'test') { Invoke-TaskPython @('-m','src.utils.delivery','--verify') }
+if ($Task -eq 'package') { Invoke-TaskPython @('-m','src.utils.delivery','--package') }
+if ($Task -eq 'all') { Invoke-TaskPython @('-m','src.utils.delivery','--verify','--package') }
 if ($Task -eq 'dashboard') {
-    Invoke-TaskPython @('-m','streamlit','run','dashboard.py','--server.address','127.0.0.1','--server.headless','true','--browser.gatherUsageStats','false')
+    Invoke-TaskPython @('-m','streamlit','run','dashboard/dashboard.py','--server.address','127.0.0.1','--server.headless','true','--browser.gatherUsageStats','false')
 }

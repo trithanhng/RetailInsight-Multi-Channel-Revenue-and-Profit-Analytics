@@ -4,7 +4,7 @@
 
 ## Bộ hồ sơ
 
-`python -m retail_bi.delivery --verify --package` lưu log kiểm thử, xuất minh chứng từ run hiện hành và tạo `output/AdventureWorks_Retail_BI_GitHub.zip`.
+`python -m src.utils.delivery --verify --package` lưu log kiểm thử, xuất minh chứng từ run hiện hành và tạo `output/AdventureWorks_Retail_BI_GitHub.zip`.
 
 ZIP gồm mã nguồn, SQL, test, giao diện/theme, README, tài liệu, giấy phép, workflow CI, báo cáo PDF và dữ liệu mẫu/minh chứng. ZIP loại `data/`, `.venv/`, `.cache/`, `.git/`, bytecode và tài liệu ngoài phạm vi dự án. Repository vẫn giữ CSV nguồn đã commit; nội dung ZIP tải lại bằng script.
 

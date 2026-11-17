@@ -14,8 +14,10 @@ from reportlab.graphics.shapes import Drawing, Rect, String, Line, PolyLine
 from reportlab.graphics import renderPDF
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 
-from .pipeline import ROOT, SCALE, BASE, current_run, kpis, monthly_sales
-from .analytics import monthly_view, growth_metric, number_vn
+from src.ingestion.source import BASE
+from src.pipeline.retail import current_run
+from src.pipeline.analytics import kpis, monthly_sales, monthly_view, growth_metric, number_vn
+from .config import ROOT, SCALE
 
 NAVY = colors.HexColor('#143957')
 TEAL = colors.HexColor('#008577')

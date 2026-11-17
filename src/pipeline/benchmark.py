@@ -10,7 +10,8 @@ import time
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from .pipeline import current_run, ROOT
+from src.utils.config import ROOT
+from .retail import current_run
 
 QUERIES = {
     'monthly': ('01_monthly.sql', ['purchase_month', 'channel']),

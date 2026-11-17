@@ -7,7 +7,7 @@ import pytest
 
 def analytics():
     try:
-        return importlib.import_module('retail_bi.analytics')
+        return importlib.import_module('src.pipeline.analytics')
     except ImportError:
         pytest.fail('Chưa có lớp phân tích dùng chung cho dashboard')
 

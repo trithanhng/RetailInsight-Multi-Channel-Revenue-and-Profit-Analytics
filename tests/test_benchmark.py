@@ -4,7 +4,7 @@ import pytest
 
 def test_pandas_and_spark_queries_match_hand_calculated_totals(tmp_path):
     try:
-        from retail_bi.benchmark import compare
+        from src.pipeline.benchmark import compare
     except ImportError:
         pytest.fail('Chưa có phép so sánh pandas với Spark SQL')
     frame = pd.DataFrame({'order_id': ['a', 'a', 'b'],

@@ -1,7 +1,7 @@
 """Các phép phân tích dùng chung cho dashboard, xuất CSV và báo cáo."""
 import pandas as pd
 
-from .pipeline import SCALE
+from src.utils.config import SCALE
 
 ALL = 'Tất cả'
 CATEGORY_LABELS = {'Bikes': 'Xe đạp', 'Components': 'Linh kiện',
@@ -86,3 +86,21 @@ def growth_metric(monthly):
     return {'period': last.purchase_month,
         'previous_period': str(last.month - 1),
         'growth_pct': last.growth_pct if last.comparable else None}
+
+
+def kpis(frame):
+    revenue, cost, profit = (int(frame[c].sum()) for c in ['revenue_units', 'cost_units', 'profit_units'])
+    return {'revenue_units': revenue, 'cost_units': cost, 'profit_units': profit,
+        'margin_pct': profit / revenue * 100 if revenue else None,
+        'orders': int(frame.order_id.nunique())}
+
+
+def monthly_sales(frame):
+    if frame.empty:
+        return pd.DataFrame(columns=['purchase_month', 'revenue_units', 'profit_units', 'growth_pct'])
+    months = pd.period_range(frame.purchase_month.min(), frame.purchase_month.max(), freq='M').astype(str)
+    out = frame.groupby('purchase_month')[['revenue_units', 'profit_units']].sum().reindex(months, fill_value=0)
+    out = out.rename_axis('purchase_month').reset_index()
+    previous = out.revenue_units.shift(1)
+    out['growth_pct'] = (out.revenue_units / previous.where(previous.ne(0)) - 1) * 100
+    return out

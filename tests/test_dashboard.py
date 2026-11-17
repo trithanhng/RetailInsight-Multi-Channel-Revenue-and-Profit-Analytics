@@ -3,7 +3,7 @@ from streamlit.testing.v1 import AppTest
 
 
 def app():
-    app = AppTest.from_file('dashboard.py', default_timeout=30).run()
+    app = AppTest.from_file('dashboard/dashboard.py', default_timeout=30).run()
     assert not app.exception
     return app
 

@@ -4,7 +4,7 @@ import pytest
 
 def test_report_contains_measured_kpis_and_fictitious_source_notice(tmp_path):
     try:
-        from retail_bi.report import build_report
+        from src.utils.report import build_report
     except ImportError:
         pytest.fail('Chưa có báo cáo PDF')
     output = tmp_path / 'report.pdf'
@@ -19,7 +19,7 @@ def test_report_contains_measured_kpis_and_fictitious_source_notice(tmp_path):
 
 
 def test_markdown_report_reuses_measured_totals_and_comparable_month(tmp_path):
-    from retail_bi import report
+    from src.utils import report
     assert hasattr(report, 'build_markdown_report'), 'Chưa có bản báo cáo đọc trực tiếp trên GitHub'
     output = report.build_markdown_report(tmp_path / 'report.md')
     content = output.read_text(encoding='utf-8')

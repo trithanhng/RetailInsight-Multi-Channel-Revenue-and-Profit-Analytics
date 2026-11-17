@@ -25,12 +25,12 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
       - name: Load pinned Microsoft data
-        run: python -m retail_bi.pipeline --download
+        run: python -m src.pipeline.retail --download
       - name: Verify Spark SQL against pandas
-        run: python -m retail_bi.benchmark --repeats 1
+        run: python -m src.pipeline.benchmark --repeats 1
       - name: Run tests
         run: python -m pytest -q
       - name: Build report and evidence
         run: |
-          python -m retail_bi.report
-          python -m retail_bi.delivery
+          python -m src.utils.report
+          python -m src.utils.delivery

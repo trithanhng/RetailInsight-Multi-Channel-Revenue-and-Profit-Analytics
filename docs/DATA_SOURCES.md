@@ -21,7 +21,7 @@ Nguồn của bản triển khai là **Microsoft SQL Server Samples / AdventureW
 | [instawdbdw.sql](https://raw.githubusercontent.com/microsoft/sql-server-samples/b47eadc85277f72843647223cde53aa1b85ffcb8/samples/databases/adventure-works/data-warehouse-install-script/instawdbdw.sql) | — | DDL để đọc schema |
 | [license.txt](https://raw.githubusercontent.com/microsoft/sql-server-samples/b47eadc85277f72843647223cde53aa1b85ffcb8/license.txt) | — | Giấy phép Microsoft |
 
-Lệnh tải tự động: `python -m retail_bi.pipeline --download`. CSV dùng UTF-8, phân cách `|`, không có header. Chương trình chỉ **đọc schema**, không thực thi DDL tạo/xóa database. Không cần SQL Server hoặc file backup `.bak`.
+Lệnh tải tự động: `python -m src.pipeline.retail --download`. CSV dùng UTF-8, phân cách `|`, không có header. Chương trình chỉ **đọc schema**, không thực thi DDL tạo/xóa database. Không cần SQL Server hoặc file backup `.bak`.
 
 ## Ý nghĩa trường và phạm vi
 

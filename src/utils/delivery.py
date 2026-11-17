@@ -11,8 +11,10 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 import pandas as pd
 
-from .analytics import monthly_view
-from .pipeline import RAW, ROOT, current_run, source_columns
+from src.pipeline.analytics import monthly_view
+from src.pipeline.retail import current_run
+from src.ingestion.source import source_columns
+from .config import RAW, ROOT
 
 
 def verify_tests(destination=ROOT / 'output' / 'evidence'):
@@ -75,7 +77,7 @@ def export_evidence(destination=ROOT / 'output' / 'evidence'):
 def build_package(output=ROOT / 'output/AdventureWorks_Retail_BI_GitHub.zip'):
     files = []
     allowed = {'.py', '.sql', '.md', '.css', '.png', '.svg', '.yml', '.yaml', '.json', '.csv', '.txt', '.log'}
-    for folder in ['retail_bi', 'tests', 'sql', 'docs', 'assets', '.github', 'output/evidence']:
+    for folder in ['src', 'dashboard', 'tests', 'sql', 'docs', 'assets', '.github', 'output/evidence']:
         for file in (ROOT / folder).rglob('*'):
             if (file.is_file() and file.suffix.lower() in allowed
                     and '__pycache__' not in file.parts and 'local' not in file.parts
@@ -83,7 +85,7 @@ def build_package(output=ROOT / 'output/AdventureWorks_Retail_BI_GitHub.zip'):
                 files.append(file)
     for name in ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'requirements.txt', 'pytest.ini',
             '.gitignore', '.gitattributes', 'setup.cmd', 'run.cmd', 'setup.ps1', 'run.ps1',
-            'dashboard.py', '.streamlit/config.toml', 'output/Bao_cao_pipeline_dashboard.pdf']:
+            '.streamlit/config.toml', 'output/Bao_cao_pipeline_dashboard.pdf']:
         file = ROOT / name
         if file.exists():
             files.append(file)

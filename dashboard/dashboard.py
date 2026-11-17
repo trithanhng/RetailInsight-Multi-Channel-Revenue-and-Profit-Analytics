@@ -7,15 +7,17 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from retail_bi.analytics import (ALL, CATEGORY_LABELS, CHANNEL_LABELS, compact_money,
+from src.pipeline.analytics import (ALL, CATEGORY_LABELS, CHANNEL_LABELS, compact_money,
     filter_sales, group_metrics, growth_metric, monthly_view, number_vn, public_table, csv_bytes)
-from retail_bi.pipeline import ROOT, SCALE, current_run, kpis
+from src.pipeline.retail import current_run
+from src.pipeline.analytics import kpis
+from src.utils.config import ROOT, SCALE
 
 NAVY, TEAL, AMBER, RED = '#183f63', '#0f8b80', '#d49b38', '#c15155'
 CHANNEL_COLORS = {'Internet': TEAL, 'Reseller': NAVY}
 
 st.set_page_config(page_title='RetailInsight · Retail BI', page_icon='📊', layout='wide')
-st.markdown('<style>' + (ROOT / 'assets/dashboard.css').read_text(encoding='utf-8') + '</style>', unsafe_allow_html=True)
+st.markdown('<style>' + (ROOT / 'dashboard/assets/dashboard.css').read_text(encoding='utf-8') + '</style>', unsafe_allow_html=True)
 
 
 @st.cache_data(show_spinner=False)
@@ -30,7 +32,7 @@ try:
 except FileNotFoundError:
     st.title('AdventureWorks · Retail BI')
     st.info('Chưa có dữ liệu phân tích. Hãy chạy lệnh nạp dữ liệu trong README rồi mở lại trang.')
-    st.code('python -m retail_bi.pipeline --download')
+    st.code('python -m src.pipeline.retail --download')
     st.stop()
 
 source_start, source_end = fact.order_date.min().date(), fact.order_date.max().date()

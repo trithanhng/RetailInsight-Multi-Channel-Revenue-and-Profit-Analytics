@@ -1,106 +1,18 @@
-"""Nạp nguồn Microsoft được ghim phiên bản, kiểm tra, lưu Parquet và tạo mart."""
+"""Build and publish validated Parquet runs and the retail data mart."""
 import argparse
 import csv
 from datetime import datetime, timezone
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 import hashlib
 import json
 from pathlib import Path
-import re
 import time
-import urllib.request
 
 import pandas as pd
 
-COMMIT = 'b47eadc85277f72843647223cde53aa1b85ffcb8'
-REPO = 'https://github.com/microsoft/sql-server-samples'
-BASE = f'https://raw.githubusercontent.com/microsoft/sql-server-samples/{COMMIT}/samples/databases/adventure-works/data-warehouse-install-script/'
-TABLES = ['FactInternetSales', 'FactResellerSales', 'DimProduct', 'DimProductSubcategory',
-    'DimProductCategory', 'DimSalesTerritory', 'DimCurrency', 'DimReseller']
-SCALE = 10000
-ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / 'data' / 'adventureworks'
-RAW = ROOT / 'data' / 'raw'
-MONEY = {'SalesAmount': 'revenue_units', 'TotalProductCost': 'cost_units',
-    'DiscountAmount': 'discount_units', 'ExtendedAmount': 'gross_units'}
-
-
-def download(raw_dir=RAW):
-    raw_dir = Path(raw_dir)
-    raw_dir.mkdir(parents=True, exist_ok=True)
-    for name in [t + '.csv' for t in TABLES] + ['instawdbdw.sql', 'license.txt']:
-        target = raw_dir / name
-        if target.exists():
-            continue
-        url = f'https://raw.githubusercontent.com/microsoft/sql-server-samples/{COMMIT}/license.txt' if name == 'license.txt' else BASE + name
-        temp = target.with_suffix(target.suffix + '.part')
-        with urllib.request.urlopen(url, timeout=120) as response, temp.open('wb') as output:
-            while chunk := response.read(1024 * 1024):
-                output.write(chunk)
-        temp.replace(target)
-        print(f'Downloaded {name}: {target.stat().st_size:,} bytes', flush=True)
-
-
-def source_columns(sql, table):
-    match = re.search(r'CREATE TABLE \[dbo\]\.\[' + re.escape(table) + r'\]\((.*?)\) ON', sql, re.S)
-    if not match:
-        raise ValueError(f'Không tìm thấy schema {table}')
-    return re.findall(r'^\s*\[([^\]]+)\]', match.group(1), re.M)
-
-
-def money_units(value):
-    try:
-        number = Decimal(str(value))
-        if not number.is_finite() or number < 0:
-            return pd.NA
-        return int((number * SCALE).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
-    except (InvalidOperation, ValueError):
-        return pd.NA
-
-
-def clean_source(name, raw):
-    frame = raw.copy()
-    for col in frame:
-        frame[col] = frame[col].astype('string').str.strip().replace('', pd.NA)
-    duplicate_count = int(frame.duplicated().sum())
-    frame = frame.drop_duplicates().copy()
-    key = ['SalesOrderNumber', 'SalesOrderLineNumber'] if name.startswith('Fact') else [name[3:] + 'Key']
-    missing_keys = set(key) - set(frame.columns)
-    if missing_keys:
-        raise ValueError(f'{name}: thiếu khóa {sorted(missing_keys)}')
-    reasons = pd.Series('', index=frame.index, dtype='string')
-    for col in key:
-        reasons.loc[frame[col].isna()] += f'missing:{col};'
-    if name.startswith('Fact'):
-        required = ['OrderDate', 'OrderQuantity', 'ProductKey', 'SalesTerritoryKey', *MONEY]
-        missing = set(required) - set(frame.columns)
-        if missing:
-            raise ValueError(f'{name}: thiếu cột {sorted(missing)}')
-        for col in ['ProductKey', 'SalesTerritoryKey']:
-            reasons.loc[frame[col].isna()] += f'missing:{col};'
-        for source, target in MONEY.items():
-            frame[target] = frame[source].map(money_units).astype('Int64')
-            reasons.loc[frame[target].isna()] += f'invalid_money:{source};'
-        frame['order_date'] = pd.to_datetime(frame.OrderDate, errors='coerce', format='mixed')
-        reasons.loc[frame.order_date.isna()] += 'invalid_order_date;'
-        quantity = pd.to_numeric(frame.OrderQuantity, errors='coerce')
-        reasons.loc[quantity.isna() | quantity.le(0) | quantity.mod(1).ne(0)] += 'invalid_quantity;'
-        frame['quantity'] = quantity.where(quantity.mod(1).eq(0)).astype('Int64')
-        frame['profit_units'] = frame.revenue_units - frame.cost_units
-        delta = (frame.gross_units - frame.discount_units - frame.revenue_units).abs()
-        reasons.loc[delta.gt(1).fillna(False)] += 'revenue_reconciliation;'
-    rejected = frame.loc[reasons.ne('')].copy()
-    rejected['rejection_reason'] = reasons.loc[reasons.ne('')]
-    clean = frame.loc[reasons.eq('')].copy()
-    if clean.duplicated(key).any():
-        raise ValueError(f'{name}: khóa {key} có dữ liệu xung đột')
-    report = {'table': name, 'rows_before': len(raw), 'duplicates_removed': duplicate_count,
-        'rows_rejected': len(rejected), 'rows_after': len(clean),
-        'columns': [{'column': col, 'dtype_before': str(raw[col].dtype),
-            'missing_before': int(raw[col].isna().sum()), 'dtype_after': str(clean[col].dtype),
-            'missing_after': int(clean[col].isna().sum())} for col in raw],
-        'missing_pct_before': float(raw.isna().sum().sum() / raw.size * 100) if raw.size else 0}
-    return clean.reset_index(drop=True), rejected.reset_index(drop=True), report
+from src.cleaning.source import clean_source
+from src.ingestion.source import BASE, COMMIT, REPO, TABLES, download, source_columns
+from src.utils.config import DATA, RAW, SCALE
+from .analytics import kpis, monthly_sales
 
 
 def checked_join(left, right, key):
@@ -153,24 +65,6 @@ def build_mart(tables):
     if mart.line_id.duplicated().any():
         raise ValueError('Trùng line_id trong mart')
     return mart
-
-
-def kpis(frame):
-    revenue, cost, profit = (int(frame[c].sum()) for c in ['revenue_units', 'cost_units', 'profit_units'])
-    return {'revenue_units': revenue, 'cost_units': cost, 'profit_units': profit,
-        'margin_pct': profit / revenue * 100 if revenue else None,
-        'orders': int(frame.order_id.nunique())}
-
-
-def monthly_sales(frame):
-    if frame.empty:
-        return pd.DataFrame(columns=['purchase_month', 'revenue_units', 'profit_units', 'growth_pct'])
-    months = pd.period_range(frame.purchase_month.min(), frame.purchase_month.max(), freq='M').astype(str)
-    out = frame.groupby('purchase_month')[['revenue_units', 'profit_units']].sum().reindex(months, fill_value=0)
-    out = out.rename_axis('purchase_month').reset_index()
-    previous = out.revenue_units.shift(1)
-    out['growth_pct'] = (out.revenue_units / previous.where(previous.ne(0)) - 1) * 100
-    return out
 
 
 def current_run(root=DATA / 'warehouse'):

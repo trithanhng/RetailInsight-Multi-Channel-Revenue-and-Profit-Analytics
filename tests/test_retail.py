@@ -3,16 +3,18 @@ import importlib
 import pandas as pd
 import pytest
 
+from src.cleaning.source import clean_source
+from src.pipeline.analytics import kpis, monthly_sales
+
 
 def core():
     try:
-        return importlib.import_module('retail_bi.pipeline')
+        return importlib.import_module('src.pipeline.retail')
     except ImportError:
         pytest.fail('Pipeline AdventureWorks chưa có')
 
 
 def test_preserves_four_decimal_money_and_does_not_double_subtract_discount():
-    api = core()
     raw = pd.DataFrame({'SalesOrderNumber': ['SO1', 'SO1', 'SO2'],
         'SalesOrderLineNumber': ['1', '1', '1'], 'ProductKey': ['1'] * 3,
         'SalesTerritoryKey': ['1'] * 3, 'CustomerKey': ['42'] * 3,
@@ -20,7 +22,7 @@ def test_preserves_four_decimal_money_and_does_not_double_subtract_discount():
         'OrderQuantity': ['2'] * 3, 'ExtendedAmount': ['10.1234'] * 3,
         'DiscountAmount': ['1.0000'] * 3, 'SalesAmount': ['9.1234'] * 3,
         'TotalProductCost': ['4.4321'] * 3})
-    clean, rejected, report = api.clean_source('FactInternetSales', raw)
+    clean, rejected, report = clean_source('FactInternetSales', raw)
     assert len(clean) == 1
     assert len(rejected) == 1
     assert clean.revenue_units.iloc[0] == 91234
@@ -30,21 +32,19 @@ def test_preserves_four_decimal_money_and_does_not_double_subtract_discount():
 
 
 def test_margin_is_weighted_and_losses_remain_visible():
-    api = core()
     frame = pd.DataFrame({'order_id': ['a', 'b'], 'revenue_units': [1000000, 100000],
         'cost_units': [600000, 200000], 'profit_units': [400000, -100000]})
-    out = api.kpis(frame)
+    out = kpis(frame)
     assert out['revenue_units'] == 1100000
     assert out['profit_units'] == 300000
     assert out['margin_pct'] == pytest.approx(27.27272727)
-    assert api.kpis(frame.iloc[:0])['margin_pct'] is None
+    assert kpis(frame.iloc[:0])['margin_pct'] is None
 
 
 def test_month_gap_and_zero_denominator_are_not_invented_growth():
-    api = core()
     frame = pd.DataFrame({'purchase_month': ['2013-01', '2013-03'],
         'revenue_units': [100, 200], 'profit_units': [30, 20]})
-    result = api.monthly_sales(frame)
+    result = monthly_sales(frame)
     assert result.revenue_units.tolist() == [100, 0, 200]
     assert result.profit_units.tolist() == [30, 0, 20]
     assert result.iloc[1].growth_pct == -100
@@ -52,22 +52,20 @@ def test_month_gap_and_zero_denominator_are_not_invented_growth():
 
 
 def test_invalid_negative_revenue_is_quarantined():
-    api = core()
     raw = pd.DataFrame({'SalesOrderNumber': ['SO1'], 'SalesOrderLineNumber': ['1'],
         'ProductKey': ['1'], 'SalesTerritoryKey': ['1'], 'ResellerKey': ['2'],
         'OrderDate': ['2013-01-01'], 'OrderQuantity': ['1'], 'ExtendedAmount': ['-10'],
         'DiscountAmount': ['0'], 'SalesAmount': ['-10'], 'TotalProductCost': ['5']})
-    clean, rejected, _ = api.clean_source('FactResellerSales', raw)
+    clean, rejected, _ = clean_source('FactResellerSales', raw)
     assert clean.empty
     assert len(rejected) == 1
 
 
 def test_conflicting_line_key_cannot_silently_duplicate_revenue():
-    api = core()
     raw = pd.DataFrame({'ProductCategoryKey': ['1', '1'],
         'EnglishProductCategoryName': ['Bikes', 'Clothing']})
     with pytest.raises(ValueError, match='ProductCategoryKey'):
-        api.clean_source('DimProductCategory', raw)
+        clean_source('DimProductCategory', raw)
 
 
 def test_channel_order_ids_do_not_collide_and_bad_foreign_keys_fail():
@@ -95,7 +93,7 @@ def test_channel_order_ids_do_not_collide_and_bad_foreign_keys_fail():
     result = api.build_mart(tables)
     assert result.order_id.tolist() == ['Internet:SO1', 'Reseller:SO1']
     assert result.line_id.nunique() == 2
-    assert api.kpis(result)['revenue_units'] == 200
+    assert kpis(result)['revenue_units'] == 200
     assert 'store_id' in result.columns, 'Mart phải giữ mã đại lý/cửa hàng có sẵn trong nguồn'
     assert result.store_id.iloc[1] == '1'
     assert pd.isna(result.store_id.iloc[0])

@@ -8,7 +8,7 @@ Tài liệu ánh xạ các yêu cầu phân tích bán lẻ đa kênh với mã 
 | Nguồn, giấy phép, schema, thời gian, số dòng | DATA_SOURCES.md; manifest.json; MICROSOFT_LICENSE.txt |
 | Cửa hàng/đại lý và chi phí | DimReseller; store_id/store/store_type trong mart; TotalProductCost làm giá vốn; Internet không có mã cửa hàng vật lý |
 | Thiếu/trùng, thời gian, ngoại lệ và trước–sau | clean_source; quality_summary.csv; data_quality.json; mẫu before/after |
-| Pipeline thu thập → làm sạch → lưu → phân tích → BI | pipeline.py; benchmark.py; dashboard.py |
+| Pipeline thu thập → làm sạch → lưu → phân tích → BI | src/ingestion/source.py; src/cleaning/source.py; src/pipeline/retail.py; src/pipeline/benchmark.py; dashboard/dashboard.py |
 | Spark SQL tổng hợp và phân khúc | sql/retail; spark_monthly/region/category/customer_segments.csv |
 | Dashboard kênh, vùng, sản phẩm và bộ lọc | Bốn trang, lựa chọn Tất cả, kỳ chung, bộ lọc liên kết và reset |
 | Doanh thu thuần, biên lợi nhuận, tăng trưởng tháng | analytics.py; KPI dashboard; công thức và giá trị trong báo cáo |
