@@ -1,11 +1,9 @@
 """Build read-only-source projections for the eight SQL benchmark workloads."""
 import csv
-import json
 from pathlib import Path
 import time
 
 import pandas as pd
-import pyarrow.parquet as pq
 
 from src.cleaning.source import clean_source, money_units
 from src.ingestion.source import source_columns
@@ -59,11 +57,9 @@ def validate_tables(tables):
                 raise ValueError(f'{name}: {column} exceeds safe int64 aggregation range')
 
 
-def prepare_tables(destination, raw_dir=RAW):
+def prepare_tables(raw_dir=RAW):
     start = time.perf_counter()
-    destination, raw_dir = Path(destination).resolve(), Path(raw_dir).resolve()
-    if destination == raw_dir or destination.is_relative_to(raw_dir):
-        raise ValueError('Benchmark destination must be outside the original data directory')
+    raw_dir = Path(raw_dir).resolve()
     before = raw_hashes(raw_dir)
     schema = (raw_dir / 'instawdbdw.sql').read_text(encoding='utf-8-sig')
     tables, inputs = {}, {}
@@ -99,12 +95,8 @@ def prepare_tables(destination, raw_dir=RAW):
             'source_columns': columns, 'rows_before': len(raw), 'rows_after': len(clean),
             'rejected_rows': len(rejected), 'duplicates_removed': quality['duplicates_removed']}
     validate_tables(tables)
-    destination.mkdir(parents=True, exist_ok=False)
     for name, frame in tables.items():
-        path = destination / f'{name}.parquet'
-        frame.to_parquet(path, index=False, coerce_timestamps='us')
-        inputs[name].update(parquet_sha256=file_sha256(path), bytes=path.stat().st_size,
-            parquet_schema=str(pq.read_schema(path)),
+        inputs[name].update(
             pandas_schema={column: str(dtype) for column, dtype in frame.dtypes.items()},
             null_counts={column: int(count) for column, count in frame.isna().sum().items()})
     after = raw_hashes(raw_dir)
@@ -114,6 +106,4 @@ def prepare_tables(destination, raw_dir=RAW):
         'raw_sha256_after': after, 'raw_unchanged': True, 'tables': inputs,
         'preparation_seconds': time.perf_counter() - start,
         'money_scale': 10000, 'currency': 'USD', 'status': 'passed'}
-    (destination / 'input_manifest.json').write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8')
-    return manifest
+    return tables, manifest

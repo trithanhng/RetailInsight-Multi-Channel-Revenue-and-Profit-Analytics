@@ -1,5 +1,6 @@
 """Matching table projections, ordering and pandas implementations for Q1-Q8."""
 import pandas as pd
+import pyarrow as pa
 
 from src.utils.config import ROOT
 
@@ -100,13 +101,22 @@ def pandas_query(query, tables):
         **{column: (column, 'sum') for column in money}, orders=('order_id', 'nunique'))
 
 
-def read_pandas_query(query, directory):
-    tables = {name: pd.read_parquet(directory / f'{name}.parquet', columns=columns)
+def run_pandas_query(query, tables):
+    tables = {name: tables[name][columns]
         for name, columns in QUERIES[query]['tables'].items()}
     return normalize_result(query, pandas_query(query, tables))
 
 
-def spark_query(query, directory, spark, statement=None):
-    for name, columns in QUERIES[query]['tables'].items():
-        spark.read.parquet((directory / f'{name}.parquet').as_posix()).select(*columns).createOrReplaceTempView(name)
+def register_spark_tables(spark, tables):
+    for name, frame in tables.items():
+        # Arrow preserves nullable int64 money and the schema of empty tables.
+        schema = pa.Schema.from_pandas(frame, preserve_index=False)
+        if name == 'DimDate':
+            schema = schema.set(schema.get_field_index('FullDateAlternateKey'),
+                pa.field('FullDateAlternateKey', pa.date32()))
+        spark.createDataFrame(pa.Table.from_pandas(frame, schema=schema,
+            preserve_index=False)).createOrReplaceTempView(name)
+
+
+def spark_query(query, spark, statement=None):
     return spark.sql(statement if statement is not None else (SQL_DIR / f'{query}.sql').read_text(encoding='utf-8'))

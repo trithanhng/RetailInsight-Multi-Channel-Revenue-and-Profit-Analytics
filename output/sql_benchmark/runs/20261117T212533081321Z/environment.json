@@ -1,10 +1,11 @@
 {
-  "cpu_model": "12th Gen Intel(R) Core(TM) i5-12450H",
+  "cpu_model": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
   "logical_cpus": 12,
-  "physical_cores": 8,
-  "ram_bytes": 16852574208,
+  "physical_cores": null,
+  "ram_bytes": null,
   "architecture": "AMD64",
-  "started_at_utc": "2026-11-17T12:59:10.201367+00:00",
+  "hardware_note": "Hardware probe incomplete: Command '['powershell', '-NoProfile', '-Command', \"$ErrorActionPreference='Stop'; $cpu=@(Get-CimInstance Win32_Processor); @{cpu_model=($cpu.Name -join '; '); physical_cores=($cpu | Measure-Object NumberOfCores -Sum).Sum; ram_bytes=(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory} | ConvertTo-Json -Compress\"]' returned non-zero exit status 1.",
+  "started_at_utc": "2026-11-17T21:25:33.826385+00:00",
   "python": "3.12.10",
   "os": "Windows-11-10.0.26300-SP0",
   "pandas": "2.2.3",
@@ -13,8 +14,9 @@
   "seed": 17,
   "status": "passed",
   "timer": "time.perf_counter wall-clock seconds",
-  "timing_boundary": "Parquet read/projection + JOIN/filter/group/window/sort + collect/normalize to pandas",
-  "cache_policy": "No application persist/cache; OS cache not cleared; initial hashing warms OS cache; first runs retained",
+  "timing_boundary": "In-memory query/projection + JOIN/filter/group/window/sort + collect/normalize to pandas; source loading and Spark table setup excluded",
+  "input_mode": "Validated CSV data held in pandas DataFrames and Spark temporary views; no Parquet",
+  "cache_policy": "No application persist/cache; OS cache not cleared; first runs retained",
   "storage_note": "Local filesystem; disk type/throughput, background load and peak memory not measured",
   "query_projections": {
     "Q1": {
@@ -202,15 +204,15 @@
     }
   },
   "source_sha256": {
-    "src\\benchmark\\runner.py": "7ecbbeb8d8ca6b999d7fa4cfec3253a37be0f257d690840329e0e4216573b9e3",
-    "src\\benchmark\\queries.py": "0b3585bc1053099049038761c8ff30e3b5cb70e89de3e3cb96befcba5afcfd64",
+    "src\\benchmark\\runner.py": "4805b5e356e37d426db3823203f5d1859c8af725e6cea280879e498a84a49bae",
+    "src\\benchmark\\queries.py": "b878c9810a0e7993eef2121d1bff54f2f7aaa1975754e9619a526eca65d2406f",
     "src\\benchmark\\mart.py": "7b8a1842764e8264d165783b1f2234cbf1166b18ef544d26b9377782ae321cef",
-    "src\\benchmark\\prepare.py": "6e4243a6885947ef33844afe9d0243a6018e668962ce0f7247755569d21ede22",
+    "src\\benchmark\\prepare.py": "c66157a78698367a2362366d4e8654c3b5a6d265277bfd23efc0e7f3a9c0d364",
     "src\\ingestion\\source.py": "4918386b4b7ed517de0079994cabf7735cd5b7c584a2c6d19200c9d6cea00a53",
     "src\\cleaning\\source.py": "c2aa299bf2a3578321c840c00159372e3c1cf15afff4ba9537216351f0b312eb",
     "src\\utils\\files.py": "cd53c5950838565fe9658b9ae43b049d22e22feeabbe79503b0e5e3570ee83de"
   },
-  "preparation_seconds": 5.656369199976325,
+  "preparation_seconds": 5.874353599967435,
   "sql_sha256": {
     "Q1": "7c22e685399718f54ff02833332813aaeb055209a53823d5569afcba1011eab7",
     "Q2": "22e3d13bc36d1c3b0f30d8e7c0356dec5bdcaaab9d1f19e0e848f3c4cf968674",
@@ -221,7 +223,17 @@
     "Q7": "b44fd42998fb660127d54346563d22669262d440076b6107bd031c32c90cfcbd",
     "Q8": "ac0c2add5e217ca4e48752e3cbacca380ec1df65b6f736cdcf56b4ce9bdecf19"
   },
-  "spark_startup_seconds": 6.053992600063793,
+  "sql_statements": {
+    "Q1": "SELECT ProductKey, EnglishProductName, list_price_units\nFROM DimProduct WHERE list_price_units >= 1000000\nORDER BY ProductKey\n",
+    "Q2": "SELECT f.ResellerKey, r.ResellerName, SUM(f.revenue_units) AS revenue_units,\n       COUNT(DISTINCT f.order_id) AS orders\nFROM FactResellerSales f JOIN DimReseller r ON f.ResellerKey = r.ResellerKey\nGROUP BY f.ResellerKey, r.ResellerName ORDER BY f.ResellerKey\n",
+    "Q3": "WITH sales AS (\n    SELECT ProductKey, channel, order_id, revenue_units, cost_units, profit_units FROM FactInternetSales\n    UNION ALL\n    SELECT ProductKey, channel, order_id, revenue_units, cost_units, profit_units FROM FactResellerSales\n)\nSELECT f.channel, c.ProductCategoryKey, c.EnglishProductCategoryName,\n       SUM(f.revenue_units) AS revenue_units, SUM(f.cost_units) AS cost_units,\n       SUM(f.profit_units) AS profit_units, COUNT(DISTINCT f.order_id) AS orders\nFROM sales f JOIN DimProduct p ON f.ProductKey = p.ProductKey\nLEFT JOIN DimProductSubcategory s ON p.ProductSubcategoryKey = s.ProductSubcategoryKey\nLEFT JOIN DimProductCategory c ON s.ProductCategoryKey = c.ProductCategoryKey\nGROUP BY f.channel, c.ProductCategoryKey, c.EnglishProductCategoryName\nORDER BY f.channel, c.ProductCategoryKey NULLS LAST\n",
+    "Q4": "SELECT g.CountryRegionCode, g.StateProvinceCode, SUM(f.revenue_units) AS revenue_units,\n       COUNT(DISTINCT f.order_id) AS orders\nFROM FactResellerSales f JOIN DimReseller r ON f.ResellerKey = r.ResellerKey\nLEFT JOIN DimGeography g ON r.GeographyKey = g.GeographyKey\nGROUP BY g.CountryRegionCode, g.StateProvinceCode\nORDER BY g.CountryRegionCode NULLS LAST, g.StateProvinceCode NULLS LAST\n",
+    "Q5": "WITH sales AS (\n    SELECT OrderDateKey, channel, order_id, revenue_units, cost_units, profit_units FROM FactInternetSales\n    UNION ALL\n    SELECT OrderDateKey, channel, order_id, revenue_units, cost_units, profit_units FROM FactResellerSales\n)\nSELECT DATE_FORMAT(d.FullDateAlternateKey, 'yyyy-MM') AS purchase_month, f.channel,\n       SUM(f.revenue_units) AS revenue_units, SUM(f.cost_units) AS cost_units,\n       SUM(f.profit_units) AS profit_units, COUNT(DISTINCT f.order_id) AS orders\nFROM sales f JOIN DimDate d ON f.OrderDateKey = d.DateKey\nGROUP BY DATE_FORMAT(d.FullDateAlternateKey, 'yyyy-MM'), f.channel\nORDER BY purchase_month, f.channel\n",
+    "Q6": "WITH totals AS (\n    SELECT g.CountryRegionCode, g.StateProvinceCode, f.ResellerKey, r.ResellerName,\n           SUM(f.revenue_units) AS revenue_units\n    FROM FactResellerSales f JOIN DimReseller r ON f.ResellerKey = r.ResellerKey\n    LEFT JOIN DimGeography g ON r.GeographyKey = g.GeographyKey\n    GROUP BY g.CountryRegionCode, g.StateProvinceCode, f.ResellerKey, r.ResellerName\n), ranked AS (\n    SELECT *, ROW_NUMBER() OVER (\n        PARTITION BY CountryRegionCode, StateProvinceCode\n        ORDER BY revenue_units DESC, ResellerKey ASC\n    ) AS rank FROM totals\n)\nSELECT CountryRegionCode, StateProvinceCode, ResellerKey, ResellerName, revenue_units, rank\nFROM ranked WHERE rank <= 3\nORDER BY CountryRegionCode NULLS LAST, StateProvinceCode NULLS LAST, rank\n",
+    "Q7": "SELECT r.BusinessType, SUM(f.revenue_units) AS revenue_units,\n       SUM(f.cost_units) AS cost_units, SUM(f.profit_units) AS profit_units,\n       COUNT(DISTINCT f.order_id) AS orders\nFROM FactResellerSales f JOIN DimReseller r ON f.ResellerKey = r.ResellerKey\nGROUP BY r.BusinessType ORDER BY r.BusinessType NULLS LAST\n",
+    "Q8": "SELECT f.CustomerKey, SUM(f.revenue_units) AS revenue_units,\n       COUNT(DISTINCT f.order_id) AS orders\nFROM FactInternetSales f JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey\nGROUP BY f.CustomerKey ORDER BY revenue_units DESC, f.CustomerKey ASC LIMIT 10\n"
+  },
+  "spark_startup_seconds": 18.335524099995382,
   "spark": "4.0.1",
   "master": "local[2]",
   "default_parallelism": 2,
@@ -239,6 +251,7 @@
     "spark.executor.memory": "default"
   },
   "java_version": "java version \"17.0.12\" 2024-07-16 LTS\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)\n",
+  "spark_table_setup_seconds": 4.816018500016071,
   "diagnostic_queries_after_measurement": 8,
   "raw_sha256_after_measurement": {
     "DimAccount.csv": "4d056c310c97a247cd0c11c8ba6d8f393c0c385b167b76c5ceeb94345058bf9e",
@@ -273,6 +286,5 @@
     "ProspectiveBuyer.csv": "118e084b3885fef81b14226afbcdeae97288ae82d2cc07b4438522d2ee6d093b"
   },
   "raw_unchanged": true,
-  "parquet_unchanged": true,
   "sql_unchanged": true
 }

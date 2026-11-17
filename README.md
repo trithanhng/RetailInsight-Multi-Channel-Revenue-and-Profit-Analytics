@@ -136,9 +136,11 @@ Tiền giữ bằng số nguyên **1/10.000 USD**, chỉ làm tròn khi hiển t
 .\run.cmd package      # xuất minh chứng và gói phân phối ZIP
 ```
 
-Benchmark dùng cùng Parquet, cùng cột và phép tổng hợp; mốc đo gồm đọc, tổng hợp, distinct, sắp xếp và trả kết quả. Khởi động JVM đo riêng; không loại lượt đầu và không xóa cache hệ điều hành. Kết quả được so sánh chính xác **từng nhóm**, không chỉ tổng chung.
+Benchmark mart dùng cùng Parquet, cùng cột và phép tổng hợp; mốc đo gồm đọc, tổng hợp, distinct, sắp xếp và trả kết quả. Khởi động JVM đo riêng; không loại lượt đầu và không xóa cache hệ điều hành. Kết quả được so sánh chính xác **từng nhóm**, không chỉ tổng chung.
 
 Bộ Q1–Q8 đọc chín bảng AdventureWorks riêng để đo filter, JOIN, GROUP BY và window. Mã và SQL nằm trong `src/benchmark/`, kiểm thử trong `tests/benchmark/`; kết quả lưu tại [output/sql_benchmark](output/sql_benchmark/README.md). Q1 dùng ngưỡng 100 USD; Q7 nhóm theo loại hình đại lý vì nguồn không có phương thức thanh toán giao dịch.
+
+Q1–Q8 nạp CSV đã kiểm tra vào pandas và temporary view Spark một lần trước phép đo; truy vấn chạy trong bộ nhớ, không đọc/ghi Parquet. Run mới chỉ có thư mục `results/` và `plans/`, không tạo `tables/` hoặc `queries/`; SQL thực thi và hash được lưu trong `environment.json`. Thời gian chuẩn bị và nạp bảng Spark được ghi riêng. Không so trực tiếp thời gian mới với run Parquet cũ.
 
 Trên máy mới, tải các bảng còn thiếu (file nguồn đã có được giữ nguyên), sau đó chạy:
 

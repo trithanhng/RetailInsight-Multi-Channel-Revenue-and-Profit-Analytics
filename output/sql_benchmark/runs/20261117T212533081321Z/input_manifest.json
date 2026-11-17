@@ -112,9 +112,6 @@
       "rows_after": 606,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "603e23e661bd4f594935d44e4f10d35046cf7d99d09362765dbb511800762a13",
-      "bytes": 12165,
-      "parquet_schema": "ProductKey: int64\nProductSubcategoryKey: int64\nEnglishProductName: string\nlist_price_units: int64\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 596",
       "pandas_schema": {
         "ProductKey": "Int64",
         "ProductSubcategoryKey": "Int64",
@@ -144,9 +141,6 @@
       "rows_after": 37,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "086b049e83ed32f7b35c7f621ef7722f9d6947446932fa22b5672512c6f4215f",
-      "bytes": 2128,
-      "parquet_schema": "ProductSubcategoryKey: int64\nProductCategoryKey: int64\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 347",
       "pandas_schema": {
         "ProductSubcategoryKey": "Int64",
         "ProductCategoryKey": "Int64"
@@ -171,9 +165,6 @@
       "rows_after": 4,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "f58221d03450169c075603399e8388d99aff3ffea227a783e8a878536ac2e79b",
-      "bytes": 2002,
-      "parquet_schema": "ProductCategoryKey: int64\nEnglishProductCategoryName: string\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 360",
       "pandas_schema": {
         "ProductCategoryKey": "Int64",
         "EnglishProductCategoryName": "string"
@@ -213,9 +204,6 @@
       "rows_after": 701,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "94a31f0f46bffc2eeb20fcdf4b872ed9cdac85c8efecbfbb6a677f9045ba8066",
-      "bytes": 19448,
-      "parquet_schema": "ResellerKey: int64\nGeographyKey: int64\nBusinessType: string\nResellerName: string\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 563",
       "pandas_schema": {
         "ResellerKey": "Int64",
         "GeographyKey": "Int64",
@@ -250,9 +238,6 @@
       "rows_after": 655,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "2873ac659dba275fa7e2066054002e4ca07d8506492407aa62f49165680f2b31",
-      "bytes": 6415,
-      "parquet_schema": "GeographyKey: int64\nStateProvinceCode: string\nCountryRegionCode: string\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 464",
       "pandas_schema": {
         "GeographyKey": "Int64",
         "StateProvinceCode": "string",
@@ -293,9 +278,6 @@
       "rows_after": 3652,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "adf790b169fb61e331bcf89f5867be531531cb5decc90644296a441dbfcac230",
-      "bytes": 53150,
-      "parquet_schema": "DateKey: int64\nFullDateAlternateKey: timestamp[us]\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 335",
       "pandas_schema": {
         "DateKey": "Int64",
         "FullDateAlternateKey": "datetime64[ns]"
@@ -344,9 +326,6 @@
       "rows_after": 18484,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "4f2f84f358183c5fa3d284a8ae5e9e6e888b9bb822925807afbed1803541718b",
-      "bytes": 109904,
-      "parquet_schema": "CustomerKey: int64\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 194",
       "pandas_schema": {
         "CustomerKey": "Int64"
       },
@@ -390,9 +369,6 @@
       "rows_after": 60398,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "a5f55dd40aed34633cc595cd0ae93ee423fa470788e0c14f66793722d1cc72b0",
-      "bytes": 1012255,
-      "parquet_schema": "line_id: string\norder_id: string\nchannel: string\nProductKey: int64\nOrderDateKey: int64\nCustomerKey: int64\nrevenue_units: int64\ncost_units: int64\nprofit_units: int64\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 1137",
       "pandas_schema": {
         "line_id": "string",
         "order_id": "string",
@@ -453,9 +429,6 @@
       "rows_after": 60855,
       "rejected_rows": 0,
       "duplicates_removed": 0,
-      "parquet_sha256": "b12ac0a8569f942c98e0fd5065a9573033295de20870e9efa47905807d673bdf",
-      "bytes": 774938,
-      "parquet_schema": "line_id: string\norder_id: string\nchannel: string\nProductKey: int64\nOrderDateKey: int64\nResellerKey: int64\nrevenue_units: int64\ncost_units: int64\nprofit_units: int64\n-- schema metadata --\npandas: '{\"index_columns\": [], \"column_indexes\": [], \"columns\": [{\"name\":' + 1137",
       "pandas_schema": {
         "line_id": "string",
         "order_id": "string",
@@ -480,7 +453,7 @@
       }
     }
   },
-  "preparation_seconds": 5.656369199976325,
+  "preparation_seconds": 5.874353599967435,
   "money_scale": 10000,
   "currency": "USD",
   "status": "passed"

@@ -9,7 +9,8 @@ from src.benchmark.prepare import DIMENSIONS, FACTS, prepare_tables, raw_hashes,
 from src.ingestion.source import download
 from src.benchmark import runner as sql_benchmark
 from src.benchmark.mart import spark_session
-from src.benchmark.queries import QUERIES, normalize_result, read_pandas_query, spark_query
+from src.benchmark.queries import (
+    QUERIES, normalize_result, register_spark_tables, run_pandas_query, spark_query)
 
 
 @pytest.fixture
@@ -85,11 +86,12 @@ def write_raw(directory, tables):
 def test_preparation_preserves_raw_and_validates_money(tmp_path, tables):
     raw = write_raw(tmp_path / 'raw', tables)
     before = raw_hashes(raw)
-    manifest = prepare_tables(tmp_path / 'prepared', raw)
+    prepared, manifest = prepare_tables(raw)
     assert raw_hashes(raw) == before == manifest['raw_sha256_before']
     assert manifest['raw_unchanged']
     assert len(manifest['tables']) == 9
-    actual = pd.read_parquet(tmp_path / 'prepared/DimProduct.parquet')
+    actual = prepared['DimProduct']
+    assert list(tmp_path.iterdir()) == [raw]
     assert actual.list_price_units.iloc[:3].tolist() == [999999, 1000000, 1000001]
     assert pd.isna(actual.list_price_units.iloc[3])
     assert all(value['rejected_rows'] == 0 for value in manifest['tables'].values())
@@ -113,7 +115,7 @@ def test_invalid_source_price_is_not_silently_dropped(tmp_path, tables):
     raw = write_raw(tmp_path / 'raw', tables)
     before = raw_hashes(raw)
     with pytest.raises(ValueError, match='ListPrice'):
-        prepare_tables(tmp_path / 'prepared', raw)
+        prepare_tables(raw)
     assert raw_hashes(raw) == before
 
 
@@ -132,19 +134,18 @@ def test_invalid_tables_are_rejected(tables, problem):
 
 
 @pytest.mark.parametrize('case', ['normal', 'empty', 'large_money'])
-def test_all_eight_queries_match_exactly(tmp_path, spark, tables, case):
+def test_all_eight_queries_match_exactly(spark, tables, case):
     if case == 'empty':
         tables = {name: frame.iloc[:0] for name, frame in tables.items()}
     elif case == 'large_money':
         tables['FactInternetSales'].loc[0, 'revenue_units'] = 2**53 + 1
         tables['FactInternetSales'].loc[0, 'profit_units'] = 2**53 + 1 - 60
     validate_tables(tables)
-    for name, frame in tables.items():
-        frame.to_parquet(tmp_path / f'{name}.parquet', index=False, coerce_timestamps='us')
+    register_spark_tables(spark, tables)
     results = {}
     for query in QUERIES:
-        actual = normalize_result(query, spark_query(query, tmp_path, spark).toPandas())
-        baseline = read_pandas_query(query, tmp_path)
+        actual = normalize_result(query, spark_query(query, spark).toPandas())
+        baseline = run_pandas_query(query, tables)
         assert_frame_equal(actual, baseline, check_dtype=False, check_exact=True)
         results[query] = actual
         if case == 'empty':
@@ -173,31 +174,43 @@ def test_all_eight_queries_match_exactly(tmp_path, spark, tables, case):
 
 
 def test_extended_runner_saves_complete_evidence(tmp_path, tables, monkeypatch):
+    from pyspark.sql.readwriter import DataFrameReader
+
+    def forbidden(*args, **kwargs):
+        pytest.fail('SQL benchmark must not read or write Parquet')
+
+    monkeypatch.setattr(pd, 'read_parquet', forbidden)
+    monkeypatch.setattr(pd.DataFrame, 'to_parquet', forbidden)
+    monkeypatch.setattr(DataFrameReader, 'parquet', forbidden)
     raw = write_raw(tmp_path / 'raw', tables)
     monkeypatch.setattr(sql_benchmark, 'hardware_info', lambda: {'cpu_model': 'fixture', 'ram_bytes': 1})
     destination = sql_benchmark.run_benchmark(tmp_path / 'output', raw, repeats=1)
     metadata = json.loads((destination / 'environment.json').read_text())
     assert metadata['status'] == 'passed'
-    assert metadata['raw_unchanged'] and metadata['parquet_unchanged']
+    assert metadata['raw_unchanged'] and metadata['sql_unchanged']
+    assert metadata['spark_table_setup_seconds'] >= 0
+    assert set(metadata['sql_statements']) == set(QUERIES)
     assert len(pd.read_csv(destination / 'measurements.csv')) == 16
     assert len(list((destination / 'plans').glob('*.txt'))) == 16
     assert len(list((destination / 'results').glob('*.csv'))) == 16
-    assert len(list((destination / 'queries').glob('*.sql'))) == 8
+    assert not (destination / 'queries').exists()
+    assert not (destination / 'tables').exists()
+    assert not list(destination.rglob('*.parquet'))
     assert (tmp_path / 'output/current.txt').read_text() == destination.name
     assert (destination / 'REPORT.md').is_file()
 
 
 def test_wrong_result_cannot_publish_a_successful_run(tmp_path, tables, monkeypatch):
     raw = write_raw(tmp_path / 'raw', tables)
-    original = sql_benchmark.read_pandas_query
+    original = sql_benchmark.run_pandas_query
 
-    def wrong(query, directory):
-        result = original(query, directory)
+    def wrong(query, inputs):
+        result = original(query, inputs)
         if query == 'Q1':
             result.loc[0, 'list_price_units'] += 1
         return result
 
-    monkeypatch.setattr(sql_benchmark, 'read_pandas_query', wrong)
+    monkeypatch.setattr(sql_benchmark, 'run_pandas_query', wrong)
     monkeypatch.setattr(sql_benchmark, 'hardware_info', lambda: {})
     with pytest.raises(AssertionError):
         sql_benchmark.run_benchmark(tmp_path / 'output', raw, repeats=1)

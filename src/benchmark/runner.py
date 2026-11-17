@@ -1,4 +1,4 @@
-"""Run Q1-Q8 on identical Parquet projections and retain reproducible evidence."""
+"""Run Q1-Q8 on in-memory pandas tables and Spark SQL views, retaining evidence."""
 import argparse
 from datetime import datetime, timezone
 import json
@@ -15,7 +15,8 @@ from pandas.testing import assert_frame_equal
 
 from src.benchmark.prepare import prepare_tables, raw_hashes
 from src.benchmark.mart import hardware_info, spark_session
-from src.benchmark.queries import QUERIES, SQL_DIR, normalize_result, read_pandas_query, spark_query
+from src.benchmark.queries import (
+    QUERIES, SQL_DIR, normalize_result, register_spark_tables, run_pandas_query, spark_query)
 from src.utils.config import RAW, ROOT
 from src.utils.files import file_sha256
 
@@ -47,9 +48,11 @@ def write_report(destination, metadata, measurements):
     else:
         lines.extend(['', f'Lỗi: {metadata.get("error", "run incomplete")}'])
     lines.extend(['', 'Tỷ số >1 nghĩa là pandas nhanh hơn. Chỉ so sánh hai engine trong cùng Q.', '',
-        'Mốc đo: đọc Parquet và cột cần thiết → JOIN/filter/group/window/sort → materialize về pandas. '
-        'Không tính chuẩn bị nguồn, khởi động JVM, hash, đối chiếu, ghi CSV hoặc lấy execution plan.', '',
-        'Không persist/cache dữ liệu ứng dụng; không xóa cache OS; tính hash đầu vào có thể làm nóng cache. '
+        'Mốc đo: truy vấn bảng pandas trong bộ nhớ / temporary view Spark → JOIN/filter/group/window/sort '
+        '→ materialize về pandas. Không đọc Parquet. '
+        'Không tính chuẩn bị nguồn, nạp bảng vào Spark, khởi động JVM, hash, đối chiếu, ghi CSV hoặc lấy execution plan.', '',
+        f'Nạp bảng vào Spark: {metadata.get("spark_table_setup_seconds", "unavailable")} giây. '
+        'Không persist/cache dữ liệu ứng dụng; không xóa cache OS. '
         'Giữ lượt đầu, không bỏ warm-up. Thứ tự Q xáo bằng seed cố định; luân phiên engine.', '',
         'Các truy vấn chẩn đoán EXPLAIN chạy sau các lượt đo để tránh làm nóng optimizer trước phép đo. '
         'Mỗi Q lưu formatted plan trước action và executed plan sau action.', '',
@@ -58,7 +61,8 @@ def write_report(destination, metadata, measurements):
         'Không đo peak memory, tải nền hoặc tốc độ ổ đĩa. Local[2] không chứng minh hiệu năng cụm phân tán.', '',
         'Minh chứng: [measurements.csv](measurements.csv), [summary.csv](summary.csv), '
         '[input_manifest.json](input_manifest.json), [environment.json](environment.json), '
-        '[benchmark.log](benchmark.log), thư mục `results/`, `plans/` và `queries/`.'])
+        '[benchmark.log](benchmark.log), thư mục `results/` và `plans/`. '
+        'SQL và SHA-256 được lưu trong environment.json.'])
     (destination / 'REPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
@@ -71,14 +75,15 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
     run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     destination = output / 'runs' / run_id
     destination.mkdir(parents=True)
-    for folder in ['results', 'plans', 'queries']:
+    for folder in ['results', 'plans']:
         (destination / folder).mkdir()
     metadata = {**hardware_info(), 'started_at_utc': datetime.now(timezone.utc).isoformat(),
         'python': platform.python_version(), 'os': platform.platform(),
         'pandas': pd.__version__, 'pyarrow': pyarrow.__version__, 'repeats': repeats, 'seed': seed,
         'status': 'running', 'timer': 'time.perf_counter wall-clock seconds',
-        'timing_boundary': 'Parquet read/projection + JOIN/filter/group/window/sort + collect/normalize to pandas',
-        'cache_policy': 'No application persist/cache; OS cache not cleared; initial hashing warms OS cache; first runs retained',
+        'timing_boundary': 'In-memory query/projection + JOIN/filter/group/window/sort + collect/normalize to pandas; source loading and Spark table setup excluded',
+        'input_mode': 'Validated CSV data held in pandas DataFrames and Spark temporary views; no Parquet',
+        'cache_policy': 'No application persist/cache; OS cache not cleared; first runs retained',
         'storage_note': 'Local filesystem; disk type/throughput, background load and peak memory not measured',
         'query_projections': QUERIES,
         'source_sha256': {str(file.relative_to(ROOT)): file_sha256(file) for file in
@@ -88,15 +93,15 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
     measurements, messages, baselines = [], [], {}
     spark = None
     try:
-        manifest = prepare_tables(destination / 'tables', raw_dir)
+        tables, manifest = prepare_tables(raw_dir)
         (destination / 'input_manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding='utf-8')
         metadata['preparation_seconds'] = manifest['preparation_seconds']
         metadata['sql_sha256'], statements = {}, {}
+        metadata['sql_statements'] = statements
         for query in QUERIES:
             sql = SQL_DIR / f'{query}.sql'
-            (destination / 'queries' / sql.name).write_bytes(sql.read_bytes())
             metadata['sql_sha256'][query] = file_sha256(sql)
-            statements[query] = (destination / 'queries' / sql.name).read_text(encoding='utf-8')
+            statements[query] = sql.read_text(encoding='utf-8')
         started = time.perf_counter()
         spark = spark_session()
         metadata['spark_startup_seconds'] = time.perf_counter() - started
@@ -112,6 +117,9 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
         java = Path(os.environ['JAVA_HOME']) / 'bin' / ('java.exe' if os.name == 'nt' else 'java')
         metadata['java_version'] = subprocess.run([str(java), '-version'], capture_output=True,
             text=True, check=True, timeout=10).stderr
+        started = time.perf_counter()
+        register_spark_tables(spark, tables)
+        metadata['spark_table_setup_seconds'] = time.perf_counter() - started
         schedule = random.Random(seed)
         for iteration in range(1, repeats + 1):
             queries = list(QUERIES)
@@ -121,9 +129,9 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
                 for engine_position, engine in enumerate(engines, start=1):
                     started = time.perf_counter()
                     if engine == 'pandas':
-                        result = read_pandas_query(query, destination / 'tables')
+                        result = run_pandas_query(query, tables)
                     else:
-                        frame = spark_query(query, destination / 'tables', spark, statements[query])
+                        frame = spark_query(query, spark, statements[query])
                         result = normalize_result(query, frame.toPandas())
                     seconds = time.perf_counter() - started
                     if query not in baselines:
@@ -132,7 +140,7 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
                         'query_order': query_position, 'engine_order': engine_position,
                         'seconds': seconds, 'result_rows': len(result),
                         'input_rows': sum(manifest['tables'][table]['rows_after'] for table in QUERIES[query]['tables']),
-                        'input_file_bytes': sum(manifest['tables'][table]['bytes'] for table in QUERIES[query]['tables']),
+                        'source_csv_bytes': sum(manifest['tables'][table]['raw_bytes'] for table in QUERIES[query]['tables']),
                         'matches_baseline': False}
                     measurements.append(record)
                     result_path = destination / 'results' / f'{query}_{engine}.csv'
@@ -144,7 +152,7 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
                     messages.append(message)
                     print(message, flush=True)
         for query in QUERIES:
-            frame = spark_query(query, destination / 'tables', spark, statements[query])
+            frame = spark_query(query, spark, statements[query])
             plan = spark._jvm.PythonSQLUtils.explainString(frame._jdf.queryExecution(), 'formatted')
             (destination / 'plans' / f'{query}_formatted.txt').write_text(
                 '\n'.join(line.rstrip() for line in plan.splitlines()) + '\n', encoding='utf-8')
@@ -155,11 +163,9 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
         metadata['diagnostic_queries_after_measurement'] = len(QUERIES)
         metadata['raw_sha256_after_measurement'] = raw_hashes(raw_dir)
         metadata['raw_unchanged'] = metadata['raw_sha256_after_measurement'] == manifest['raw_sha256_before']
-        metadata['parquet_unchanged'] = all(file_sha256(destination / 'tables' / f'{name}.parquet') == item['parquet_sha256']
-            for name, item in manifest['tables'].items())
         metadata['sql_unchanged'] = all(file_sha256(SQL_DIR / f'{query}.sql') == digest
             for query, digest in metadata['sql_sha256'].items())
-        if not metadata['raw_unchanged'] or not metadata['parquet_unchanged'] or not metadata['sql_unchanged']:
+        if not metadata['raw_unchanged'] or not metadata['sql_unchanged']:
             raise ValueError('Input data changed during benchmark')
         metadata['status'] = 'passed'
     except Exception as error:
@@ -171,7 +177,7 @@ def run_benchmark(output=ROOT / 'output/sql_benchmark', raw_dir=RAW, repeats=5, 
             (destination / 'environment.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding='utf-8')
             (destination / 'benchmark.log').write_text('\n'.join(messages) + '\n', encoding='utf-8')
             frame = pd.DataFrame(measurements, columns=['query', 'engine', 'iteration', 'query_order',
-                'engine_order', 'seconds', 'result_rows', 'input_rows', 'input_file_bytes', 'matches_baseline', 'result_csv_bytes'])
+                'engine_order', 'seconds', 'result_rows', 'input_rows', 'source_csv_bytes', 'matches_baseline', 'result_csv_bytes'])
             frame.to_csv(destination / 'measurements.csv', index=False)
             write_report(destination, metadata, frame)
         finally:
