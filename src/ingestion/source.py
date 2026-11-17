@@ -12,10 +12,10 @@ TABLES = ['FactInternetSales', 'FactResellerSales', 'DimProduct', 'DimProductSub
     'DimProductCategory', 'DimSalesTerritory', 'DimCurrency', 'DimReseller']
 
 
-def download(raw_dir=RAW):
+def download(raw_dir=RAW, tables=TABLES):
     raw_dir = Path(raw_dir)
     raw_dir.mkdir(parents=True, exist_ok=True)
-    for name in [t + '.csv' for t in TABLES] + ['instawdbdw.sql', 'license.txt']:
+    for name in [t + '.csv' for t in tables] + ['instawdbdw.sql', 'license.txt']:
         target = raw_dir / name
         if target.exists():
             continue

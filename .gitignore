@@ -230,6 +230,8 @@ data/
 artifacts/runs/
 *.log
 !output/evidence/*.log
+!output/sql_benchmark/runs/*/*.log
+output/sql_benchmark/runs/*/tables/*.parquet
 output/*.zip
 /*.docx
 /*.tmp

@@ -23,9 +23,11 @@ def verify_tests(destination=ROOT / 'output' / 'evidence'):
     command = [sys.executable, '-X', 'utf8', '-m', 'pytest', '-q']
     with (destination / 'tests.log').open('w', encoding='utf-8') as log:
         result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+    output = '\n'.join(line.rstrip() for line in (destination / 'tests.log').read_text(encoding='utf-8').splitlines()) + '\n'
+    (destination / 'tests.log').write_text(output, encoding='utf-8')
     (destination / 'test_status.json').write_text(json.dumps({
         'command': 'python -X utf8 -m pytest -q', 'exit_code': result.returncode}, indent=2), encoding='utf-8')
-    print((destination / 'tests.log').read_text(encoding='utf-8'), flush=True)
+    print(output, flush=True)
     if result.returncode:
         raise RuntimeError('Kiểm thử thất bại; xem output/evidence/tests.log')
     return destination / 'tests.log'
@@ -36,6 +38,7 @@ def export_evidence(destination=ROOT / 'output' / 'evidence'):
     destination.mkdir(parents=True, exist_ok=True)
     run = current_run()
     optional = {'benchmark.csv', 'benchmark_summary.csv', 'benchmark_environment.json',
+        'pandas_monthly.csv', 'pandas_region.csv', 'pandas_category.csv',
         'spark_monthly.csv', 'spark_region.csv', 'spark_category.csv', 'spark_customer_segments.csv'}
     load_pattern = re.compile(r'^(?:load_scale_|scale)\d+_(?:benchmark(?:_summary)?\.csv|benchmark_environment\.json|synthetic_provenance\.json)$')
     # Reconcile only owned optional outputs; keep verification logs and reader files.
@@ -43,6 +46,7 @@ def export_evidence(destination=ROOT / 'output' / 'evidence'):
         if previous.is_file() and (previous.name in optional or load_pattern.fullmatch(previous.name)):
             previous.unlink()
     for name in ['manifest.json', 'benchmark.csv', 'benchmark_summary.csv', 'benchmark_environment.json',
+            'pandas_monthly.csv', 'pandas_region.csv', 'pandas_category.csv',
             'spark_monthly.csv', 'spark_region.csv', 'spark_category.csv', 'spark_customer_segments.csv']:
         if (run / name).exists():
             shutil.copyfile(run / name, destination / name)
@@ -77,7 +81,8 @@ def export_evidence(destination=ROOT / 'output' / 'evidence'):
 def build_package(output=ROOT / 'output/AdventureWorks_Retail_BI_GitHub.zip'):
     files = []
     allowed = {'.py', '.sql', '.md', '.css', '.png', '.svg', '.yml', '.yaml', '.json', '.csv', '.txt', '.log'}
-    for folder in ['src', 'dashboard', 'tests', 'sql', 'docs', 'assets', '.github', 'output/evidence']:
+    for folder in ['src', 'dashboard', 'tests', 'sql', 'docs', 'tasks', 'assets', '.github',
+            'output/evidence', 'output/sql_benchmark']:
         for file in (ROOT / folder).rglob('*'):
             if (file.is_file() and file.suffix.lower() in allowed
                     and '__pycache__' not in file.parts and 'local' not in file.parts

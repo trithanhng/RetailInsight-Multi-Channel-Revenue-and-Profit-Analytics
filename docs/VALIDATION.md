@@ -12,18 +12,23 @@
 
 `python -m pytest -q` chạy toàn bộ test. `python -m src.utils.delivery --verify` lưu stdout/stderr thực và mã thoát vào `output/evidence/tests.log` và `test_status.json`.
 
+Ngày 17/11/2026, sau khi gom mã/SQL vào `src/benchmark/` và test vào `tests/benchmark/`: **57/57 test đạt**, mã thoát 0. Bao gồm thực thi Spark, dashboard AppTest, đóng gói ZIP và chạy `--help` các module từ gói đã giải nén.
+
 | File | Phạm vi |
 |---|---|
 | test_retail.py | Độ chính xác tiền, chiết khấu, chất lượng, margin, calendar, grain, FK và công bố run |
 | test_analytics.py | Cặp tháng đủ phạm vi, tháng trống, mẫu số 0, lọc bao gồm cuối ngày, tổng hợp, CSV và định dạng Việt |
 | test_dashboard.py | Giá trị toàn kỳ, chọn kênh, kỳ tăng trưởng từng kênh, sản phẩm liên kết, reset, rỗng, ngày đảo, giao dịch lỗ |
-| test_benchmark.py | Spark SQL thực khớp fixture tính tay cho cả ba workload |
+| benchmark/test_mart.py | Spark SQL thực: fixture tính tay, NULL, rỗng, tiền lớn, lỗ/0, phân khúc sát ngưỡng, phát hiện sai nhóm dù tổng đúng, metadata và lỗi khởi động |
+| benchmark/test_sql_benchmark.py | Q1–Q8: ngưỡng giá, JOIN/FK, NULL, năm-tháng, ties/top-N, tiền lớn, giữ nguyên raw và từ chối công bố kết quả sai |
 | test_report.py | PDF/Markdown chứa số liệu thực, tính chất giả lập và kỳ so sánh đúng |
 | test_delivery.py | ZIP có entrypoint/theme/CI/PDF, không chứa dữ liệu thô, bytecode, môi trường hoặc mã cũ |
 
 AppTest thực thi ứng dụng và các biểu đồ/bảng nhưng không thay thế kiểm tra bằng mắt. Ngày 16/11/2026 đã lưu 9 ảnh cửa sổ Chrome thực tế: [xác nhận từng bước](SCREENSHOT_REVIEW.md). Đã quan sát các trang, bộ lọc Internet và reset; bản sửa reset loại cảnh báo mặc định ngày, kiểm tra ngày bị xóa và mở rộng ô ngày. Hình tổng hợp trong PDF vẫn là biểu đồ dữ liệu, được phân biệt với ảnh UI trong docs/screenshots.
 
 ## Benchmark
+
+[Kế hoạch chi tiết và kết quả baseline mới](SPARK_SQL_TEST_PLAN.md) ghi cấu hình CPU/RAM, hash dữ liệu/SQL, cách đo và kế hoạch Q1–Q8 phù hợp AdventureWorks. CSV gốc không bị thay đổi.
 
 Cùng Parquet, cột và phép tổng hợp; mốc đo gồm đọc, groupby/distinct, sort và collect. Ba lần cho mỗi engine/truy vấn, thứ tự luân phiên. Lần pandas đầu được đo và làm tham chiếu; không có lượt warm-up pandas bị giấu. Khởi động JVM ghi riêng, cache OS không xóa và không loại lần đầu. Kiểm tra từng nhóm với `assert_frame_equal`, không chỉ kiểm tra tổng tiền.
 

@@ -1,0 +1,15 @@
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 1
+   +- *(2) Sort [ProductKey#2832L ASC NULLS FIRST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 0
+            +- Exchange rangepartitioning(ProductKey#2832L ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=14226]
+               +- *(1) Filter (isnotnull(list_price_units#2835L) AND (list_price_units#2835L >= 1000000))
+                  +- *(1) ColumnarToRow
+                     +- FileScan parquet [ProductKey#2832L,EnglishProductName#2834,list_price_units#2835L] Batched: true, DataFilters: [isnotnull(list_price_units#2835L), (list_price_units#2835L >= 1000000)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(list_price_units), GreaterThanOrEqual(list_price_units,1000000)], ReadSchema: struct<ProductKey:bigint,EnglishProductName:string,list_price_units:bigint>
++- == Initial Plan ==
+   Sort [ProductKey#2832L ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(ProductKey#2832L ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=14212]
+      +- Filter (isnotnull(list_price_units#2835L) AND (list_price_units#2835L >= 1000000))
+         +- FileScan parquet [ProductKey#2832L,EnglishProductName#2834,list_price_units#2835L] Batched: true, DataFilters: [isnotnull(list_price_units#2835L), (list_price_units#2835L >= 1000000)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(list_price_units), GreaterThanOrEqual(list_price_units,1000000)], ReadSchema: struct<ProductKey:bigint,EnglishProductName:string,list_price_units:bigint>

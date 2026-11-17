@@ -285,6 +285,8 @@ with evidence_tab:
         if path.exists():
             benchmark = pd.read_csv(path)
             environment = json.loads((run / 'benchmark_environment.json').read_text(encoding='utf-8'))
+            if environment.get('status', 'passed') != 'passed':
+                st.error('Benchmark chưa hoàn tất hoặc không khớp. Bảng dưới chỉ là kết quả chẩn đoán từng lượt đã chạy.')
             benchmark['workload'] = benchmark['query'].map({'monthly': 'Tháng và kênh', 'region': 'Vùng và kênh', 'category': 'Danh mục và kênh'})
             fig = px.bar(benchmark, x='workload', y='median_seconds', color='engine', barmode='group',
                 color_discrete_map={'pandas': TEAL, 'spark_sql': NAVY}, title='Thời gian truy vấn trung vị · dữ liệu gốc',

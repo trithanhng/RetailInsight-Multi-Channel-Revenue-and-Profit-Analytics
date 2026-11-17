@@ -1,0 +1,103 @@
+== Physical Plan ==
+AdaptiveSparkPlan (16)
++- Sort (15)
+   +- Exchange (14)
+      +- HashAggregate (13)
+         +- Exchange (12)
+            +- HashAggregate (11)
+               +- HashAggregate (10)
+                  +- Exchange (9)
+                     +- HashAggregate (8)
+                        +- Project (7)
+                           +- BroadcastHashJoin Inner BuildRight (6)
+                              :- Filter (2)
+                              :  +- Scan parquet  (1)
+                              +- BroadcastExchange (5)
+                                 +- Filter (4)
+                                    +- Scan parquet  (3)
+
+
+(1) Scan parquet
+Output [3]: [order_id#2838, ResellerKey#2842L, revenue_units#2843L]
+Batched: true
+Location: InMemoryFileIndex [file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/output/sql_benchmark/runs/20261117T125908401490Z/tables/FactResellerSales.parquet]
+PushedFilters: [IsNotNull(ResellerKey)]
+ReadSchema: struct<order_id:string,ResellerKey:bigint,revenue_units:bigint>
+
+(2) Filter
+Input [3]: [order_id#2838, ResellerKey#2842L, revenue_units#2843L]
+Condition : isnotnull(ResellerKey#2842L)
+
+(3) Scan parquet
+Output [2]: [ResellerKey#2847L, ResellerName#2850]
+Batched: true
+Location: InMemoryFileIndex [file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/output/sql_benchmark/runs/20261117T125908401490Z/tables/DimReseller.parquet]
+PushedFilters: [IsNotNull(ResellerKey)]
+ReadSchema: struct<ResellerKey:bigint,ResellerName:string>
+
+(4) Filter
+Input [2]: [ResellerKey#2847L, ResellerName#2850]
+Condition : isnotnull(ResellerKey#2847L)
+
+(5) BroadcastExchange
+Input [2]: [ResellerKey#2847L, ResellerName#2850]
+Arguments: HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14300]
+
+(6) BroadcastHashJoin
+Left keys [1]: [ResellerKey#2842L]
+Right keys [1]: [ResellerKey#2847L]
+Join type: Inner
+Join condition: None
+
+(7) Project
+Output [4]: [ResellerKey#2842L, order_id#2838, revenue_units#2843L, ResellerName#2850]
+Input [5]: [order_id#2838, ResellerKey#2842L, revenue_units#2843L, ResellerKey#2847L, ResellerName#2850]
+
+(8) HashAggregate
+Input [4]: [ResellerKey#2842L, order_id#2838, revenue_units#2843L, ResellerName#2850]
+Keys [3]: [ResellerKey#2842L, ResellerName#2850, order_id#2838]
+Functions [1]: [partial_sum(revenue_units#2843L)]
+Aggregate Attributes [1]: [sum(revenue_units#2843L)#2854L]
+Results [4]: [ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L]
+
+(9) Exchange
+Input [4]: [ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L]
+Arguments: hashpartitioning(ResellerKey#2842L, ResellerName#2850, order_id#2838, 4), ENSURE_REQUIREMENTS, [plan_id=14305]
+
+(10) HashAggregate
+Input [4]: [ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L]
+Keys [3]: [ResellerKey#2842L, ResellerName#2850, order_id#2838]
+Functions [1]: [merge_sum(revenue_units#2843L)]
+Aggregate Attributes [1]: [sum(revenue_units#2843L)#2854L]
+Results [4]: [ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L]
+
+(11) HashAggregate
+Input [4]: [ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L]
+Keys [2]: [ResellerKey#2842L, ResellerName#2850]
+Functions [2]: [merge_sum(revenue_units#2843L), partial_count(distinct order_id#2838)]
+Aggregate Attributes [2]: [sum(revenue_units#2843L)#2854L, count(order_id#2838)#2855L]
+Results [4]: [ResellerKey#2842L, ResellerName#2850, sum#2857L, count#2860L]
+
+(12) Exchange
+Input [4]: [ResellerKey#2842L, ResellerName#2850, sum#2857L, count#2860L]
+Arguments: hashpartitioning(ResellerKey#2842L, ResellerName#2850, 4), ENSURE_REQUIREMENTS, [plan_id=14309]
+
+(13) HashAggregate
+Input [4]: [ResellerKey#2842L, ResellerName#2850, sum#2857L, count#2860L]
+Keys [2]: [ResellerKey#2842L, ResellerName#2850]
+Functions [2]: [sum(revenue_units#2843L), count(distinct order_id#2838)]
+Aggregate Attributes [2]: [sum(revenue_units#2843L)#2854L, count(order_id#2838)#2855L]
+Results [4]: [ResellerKey#2842L, ResellerName#2850, sum(revenue_units#2843L)#2854L AS revenue_units#2852L, count(order_id#2838)#2855L AS orders#2853L]
+
+(14) Exchange
+Input [4]: [ResellerKey#2842L, ResellerName#2850, revenue_units#2852L, orders#2853L]
+Arguments: rangepartitioning(ResellerKey#2842L ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=14312]
+
+(15) Sort
+Input [4]: [ResellerKey#2842L, ResellerName#2850, revenue_units#2852L, orders#2853L]
+Arguments: [ResellerKey#2842L ASC NULLS FIRST], true, 0
+
+(16) AdaptiveSparkPlan
+Output [4]: [ResellerKey#2842L, ResellerName#2850, revenue_units#2852L, orders#2853L]
+Arguments: isFinalPlan=false
+

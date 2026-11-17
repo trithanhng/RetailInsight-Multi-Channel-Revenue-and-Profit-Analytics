@@ -1,0 +1,63 @@
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 5
+   +- *(7) Sort [CountryRegionCode#3243 ASC NULLS LAST, StateProvinceCode#3242 ASC NULLS LAST, rank#3245 ASC NULLS FIRST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 4
+            +- Exchange rangepartitioning(CountryRegionCode#3243 ASC NULLS LAST, StateProvinceCode#3242 ASC NULLS LAST, rank#3245 ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=16418]
+               +- *(6) Filter (rank#3245 <= 3)
+                  +- Window [row_number() windowspecdefinition(CountryRegionCode#3243, StateProvinceCode#3242, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rank#3245], [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST]
+                     +- WindowGroupLimit [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], row_number(), 3, Final
+                        +- *(5) Sort [CountryRegionCode#3243 ASC NULLS FIRST, StateProvinceCode#3242 ASC NULLS FIRST, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], false, 0
+                           +- AQEShuffleRead coalesced
+                              +- ShuffleQueryStage 3
+                                 +- Exchange hashpartitioning(CountryRegionCode#3243, StateProvinceCode#3242, 4), ENSURE_REQUIREMENTS, [plan_id=16363]
+                                    +- WindowGroupLimit [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], row_number(), 3, Partial
+                                       +- *(4) Sort [CountryRegionCode#3243 ASC NULLS FIRST, StateProvinceCode#3242 ASC NULLS FIRST, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], false, 0
+                                          +- *(4) HashAggregate(keys=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240], functions=[sum(revenue_units#3234L)], output=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, revenue_units#3244L])
+                                             +- AQEShuffleRead coalesced
+                                                +- ShuffleQueryStage 2
+                                                   +- Exchange hashpartitioning(CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, 4), ENSURE_REQUIREMENTS, [plan_id=16278]
+                                                      +- *(3) HashAggregate(keys=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240], functions=[partial_sum(revenue_units#3234L)], output=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, sum#3247L])
+                                                         +- *(3) Project [ResellerKey#3233L, revenue_units#3234L, ResellerName#3240, CountryRegionCode#3243, StateProvinceCode#3242]
+                                                            +- *(3) BroadcastHashJoin [GeographyKey#3238L], [GeographyKey#3241L], LeftOuter, BuildRight, false
+                                                               :- *(3) Project [ResellerKey#3233L, revenue_units#3234L, ResellerName#3240, GeographyKey#3238L]
+                                                               :  +- *(3) BroadcastHashJoin [ResellerKey#3233L], [ResellerKey#3237L], Inner, BuildRight, false
+                                                               :     :- *(3) Filter isnotnull(ResellerKey#3233L)
+                                                               :     :  +- *(3) ColumnarToRow
+                                                               :     :     +- FileScan parquet [ResellerKey#3233L,revenue_units#3234L] Batched: true, DataFilters: [isnotnull(ResellerKey#3233L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,revenue_units:bigint>
+                                                               :     +- BroadcastQueryStage 0
+                                                               :        +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=16062]
+                                                               :           +- *(1) Filter isnotnull(ResellerKey#3237L)
+                                                               :              +- *(1) ColumnarToRow
+                                                               :                 +- FileScan parquet [ResellerKey#3237L,GeographyKey#3238L,ResellerName#3240] Batched: true, DataFilters: [isnotnull(ResellerKey#3237L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,GeographyKey:bigint,ResellerName:string>
+                                                               +- BroadcastQueryStage 1
+                                                                  +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=16079]
+                                                                     +- *(2) Filter isnotnull(GeographyKey#3241L)
+                                                                        +- *(2) ColumnarToRow
+                                                                           +- FileScan parquet [GeographyKey#3241L,StateProvinceCode#3242,CountryRegionCode#3243] Batched: true, DataFilters: [isnotnull(GeographyKey#3241L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(GeographyKey)], ReadSchema: struct<GeographyKey:bigint,StateProvinceCode:string,CountryRegionCode:string>
++- == Initial Plan ==
+   Sort [CountryRegionCode#3243 ASC NULLS LAST, StateProvinceCode#3242 ASC NULLS LAST, rank#3245 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(CountryRegionCode#3243 ASC NULLS LAST, StateProvinceCode#3242 ASC NULLS LAST, rank#3245 ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=16012]
+      +- Filter (rank#3245 <= 3)
+         +- Window [row_number() windowspecdefinition(CountryRegionCode#3243, StateProvinceCode#3242, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rank#3245], [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST]
+            +- WindowGroupLimit [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], row_number(), 3, Final
+               +- Sort [CountryRegionCode#3243 ASC NULLS FIRST, StateProvinceCode#3242 ASC NULLS FIRST, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], false, 0
+                  +- Exchange hashpartitioning(CountryRegionCode#3243, StateProvinceCode#3242, 4), ENSURE_REQUIREMENTS, [plan_id=16006]
+                     +- WindowGroupLimit [CountryRegionCode#3243, StateProvinceCode#3242], [revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], row_number(), 3, Partial
+                        +- Sort [CountryRegionCode#3243 ASC NULLS FIRST, StateProvinceCode#3242 ASC NULLS FIRST, revenue_units#3244L DESC NULLS LAST, ResellerKey#3233L ASC NULLS FIRST], false, 0
+                           +- HashAggregate(keys=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240], functions=[sum(revenue_units#3234L)], output=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, revenue_units#3244L])
+                              +- Exchange hashpartitioning(CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, 4), ENSURE_REQUIREMENTS, [plan_id=16000]
+                                 +- HashAggregate(keys=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240], functions=[partial_sum(revenue_units#3234L)], output=[CountryRegionCode#3243, StateProvinceCode#3242, ResellerKey#3233L, ResellerName#3240, sum#3247L])
+                                    +- Project [ResellerKey#3233L, revenue_units#3234L, ResellerName#3240, CountryRegionCode#3243, StateProvinceCode#3242]
+                                       +- BroadcastHashJoin [GeographyKey#3238L], [GeographyKey#3241L], LeftOuter, BuildRight, false
+                                          :- Project [ResellerKey#3233L, revenue_units#3234L, ResellerName#3240, GeographyKey#3238L]
+                                          :  +- BroadcastHashJoin [ResellerKey#3233L], [ResellerKey#3237L], Inner, BuildRight, false
+                                          :     :- Filter isnotnull(ResellerKey#3233L)
+                                          :     :  +- FileScan parquet [ResellerKey#3233L,revenue_units#3234L] Batched: true, DataFilters: [isnotnull(ResellerKey#3233L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,revenue_units:bigint>
+                                          :     +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=15991]
+                                          :        +- Filter isnotnull(ResellerKey#3237L)
+                                          :           +- FileScan parquet [ResellerKey#3237L,GeographyKey#3238L,ResellerName#3240] Batched: true, DataFilters: [isnotnull(ResellerKey#3237L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,GeographyKey:bigint,ResellerName:string>
+                                          +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=15995]
+                                             +- Filter isnotnull(GeographyKey#3241L)
+                                                +- FileScan parquet [GeographyKey#3241L,StateProvinceCode#3242,CountryRegionCode#3243] Batched: true, DataFilters: [isnotnull(GeographyKey#3241L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(GeographyKey)], ReadSchema: struct<GeographyKey:bigint,StateProvinceCode:string,CountryRegionCode:string>

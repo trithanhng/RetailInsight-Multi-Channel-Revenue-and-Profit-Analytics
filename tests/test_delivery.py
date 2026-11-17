@@ -21,6 +21,11 @@ def test_github_package_contains_entrypoints_but_no_raw_data_or_machine_state(tm
         assert 'src/cleaning/source.py' in names
         assert 'src/utils/config.py' in names
         assert 'src/utils/report.py' in names
+        assert 'src/benchmark/runner.py' in names
+        assert all(f'src/benchmark/sql/Q{i}.sql' in names for i in range(1, 9))
+        assert 'src/benchmark/prepare.py' in names
+        assert 'src/benchmark/mart.py' in names
+        assert 'tests/benchmark/test_sql_benchmark.py' in names
         assert 'dashboard/assets/dashboard.css' in names
         assert not any(n.startswith('retail_bi/') for n in names)
         assert '.streamlit/config.toml' in names
@@ -37,7 +42,7 @@ def test_github_package_contains_entrypoints_but_no_raw_data_or_machine_state(tm
         'assert (ROOT / "dashboard/assets/dashboard.css").is_file()'],
         cwd=extracted, capture_output=True, text=True, timeout=30)
     assert check.returncode == 0, check.stderr
-    for module in ['src.pipeline.retail', 'src.pipeline.benchmark', 'src.utils.delivery']:
+    for module in ['src.pipeline.retail', 'src.benchmark.mart', 'src.benchmark.runner', 'src.utils.delivery']:
         check = subprocess.run([sys.executable, '-m', module, '--help'],
             cwd=extracted, capture_output=True, text=True, timeout=30)
         assert check.returncode == 0, check.stderr
@@ -73,7 +78,7 @@ def test_evidence_export_removes_old_optional_run_outputs_but_keeps_logs(tmp_pat
         shutil.copyfile(actual / name, target)
     destination = tmp_path / 'evidence'
     destination.mkdir()
-    stale = ['benchmark.csv', 'spark_monthly.csv', 'load_scale_5_benchmark.csv',
+    stale = ['benchmark.csv', 'spark_monthly.csv', 'pandas_monthly.csv', 'load_scale_5_benchmark.csv',
         'scale5_synthetic_provenance.json']
     for name in stale:
         (destination / name).write_text('old-run', encoding='utf-8')

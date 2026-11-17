@@ -65,7 +65,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m src.pipeline.retail --download
-python -m src.pipeline.benchmark --repeats 3
+python -m src.benchmark.mart --repeats 3
 python -m src.utils.report
 python -m src.utils.delivery --verify --package
 python -m streamlit run dashboard/dashboard.py
@@ -124,9 +124,12 @@ Tiền giữ bằng số nguyên **1/10.000 USD**, chỉ làm tròn khi hiển t
 
 ## Tái lập thực nghiệm
 
+[Kế hoạch kiểm thử Spark SQL, baseline và bộ truy vấn Q1–Q8](docs/SPARK_SQL_TEST_PLAN.md).
+
 ```powershell
 .\run.cmd pipeline     # tải nếu thiếu, kiểm tra, tạo mart
 .\run.cmd benchmark    # 3 workload × 3 lần × 2 công cụ
+.\run.cmd sql-benchmark # Q1–Q8 × 5 lần × pandas/Spark SQL
 .\run.cmd load-test    # tùy chọn: 5 bản sao để thử tải
 .\run.cmd test         # kiểm thử và lưu log
 .\run.cmd report       # PDF và hình tổng hợp từ dữ liệu hiện hành
@@ -135,7 +138,16 @@ Tiền giữ bằng số nguyên **1/10.000 USD**, chỉ làm tròn khi hiển t
 
 Benchmark dùng cùng Parquet, cùng cột và phép tổng hợp; mốc đo gồm đọc, tổng hợp, distinct, sắp xếp và trả kết quả. Khởi động JVM đo riêng; không loại lượt đầu và không xóa cache hệ điều hành. Kết quả được so sánh chính xác **từng nhóm**, không chỉ tổng chung.
 
-Trong lượt đo tham chiếu, pandas nhanh hơn Spark SQL ở cả dữ liệu gốc và tải mô phỏng 5×. Overhead JVM, lập kế hoạch và thu thập kết quả có thể chi phối ở quy mô local này. Các con số và cấu hình nằm tại [output/evidence](output/evidence); thời gian thay đổi theo môi trường. Dữ liệu thử tải được tách khỏi phân tích kinh doanh. Kết quả không chứng minh khả năng mở rộng trên cụm phân tán.
+Bộ Q1–Q8 đọc chín bảng AdventureWorks riêng để đo filter, JOIN, GROUP BY và window. Mã và SQL nằm trong `src/benchmark/`, kiểm thử trong `tests/benchmark/`; kết quả lưu tại [output/sql_benchmark](output/sql_benchmark/README.md). Q1 dùng ngưỡng 100 USD; Q7 nhóm theo loại hình đại lý vì nguồn không có phương thức thanh toán giao dịch.
+
+Trên máy mới, tải các bảng còn thiếu (file nguồn đã có được giữ nguyên), sau đó chạy:
+
+```bash
+python -c "from src.ingestion.source import download; from src.benchmark.prepare import DIMENSIONS, FACTS; download(tables=[*DIMENSIONS, *FACTS])"
+python -m src.benchmark.runner --repeats 5
+```
+
+Trong lượt đo mart tham chiếu, pandas nhanh hơn Spark SQL ở cả ba truy vấn. Overhead JVM, lập kế hoạch và thu thập kết quả có thể chi phối ở quy mô local này. Các con số và cấu hình nằm tại [output/evidence](output/evidence); thời gian thay đổi theo môi trường. Thử tải 5× là tùy chọn, tách khỏi phân tích kinh doanh. Kết quả không chứng minh khả năng mở rộng trên cụm phân tán.
 
 ## Cấu trúc repository
 
@@ -148,17 +160,26 @@ src/
 ├── cleaning/source.py      chuẩn hóa, kiểm tra và cách ly bản ghi lỗi
 ├── pipeline/
 │   ├── retail.py           ghép chiều, dựng mart, công bố run và lineage
-│   ├── analytics.py        bộ lọc, KPI tháng, tổng hợp, CSV
-│   └── benchmark.py        Spark SQL và pandas baseline
+│   └── analytics.py        bộ lọc, KPI tháng, tổng hợp, CSV
+├── benchmark/
+│   ├── prepare.py          chuẩn bị chín bảng, kiểm tra khóa và hash nguồn
+│   ├── queries.py          baseline pandas và thực thi Spark SQL Q1–Q8
+│   ├── runner.py           đo Q1–Q8, đối chiếu và xuất kết quả
+│   ├── mart.py             benchmark ba tổng hợp mart, thử tải tùy chọn
+│   └── sql/Q1.sql…Q8.sql   truy vấn benchmark trên các bảng riêng
 └── utils/
     ├── config.py           đường dẫn dự án và đơn vị tiền dùng chung
+    ├── files.py            SHA-256 dùng chung
     ├── report.py           báo cáo PDF và hình dữ liệu
     └── delivery.py         log kiểm thử, minh chứng và ZIP
 .streamlit/config.toml      chủ đề và cấu hình local
 sql/retail/                 SQL tổng hợp và phân khúc
 tests/                      kiểm thử đơn vị và tích hợp
+└── benchmark/              kiểm thử mart và Q1–Q8 bằng Spark thực
+tasks/                      kế hoạch và checklist thực hiện
 docs/                       báo cáo, nguồn, demo, hướng dẫn GitHub
 output/                     báo cáo PDF, minh chứng và ZIP local
+└── sql_benchmark/          số đo, kết quả, plans và cấu hình Q1–Q8 theo run
 data/raw/                   CSV nguồn Microsoft, schema và giấy phép
 data/adventureworks/         warehouse sinh theo run, không đưa lên Git
 ```
@@ -169,7 +190,7 @@ Kiểm thử bao gồm tiền/chiết khấu, giao dịch lỗ, khóa và phép 
 
 Workflow GitHub Actions tại `.github/workflows/ci.yml` thực hiện nạp dữ liệu, đối chiếu Spark/pandas, kiểm thử và tạo báo cáo. Kết quả CI cần đối chiếu với đúng commit. Quy trình phát triển: [docs/GITHUB.md](docs/GITHUB.md).
 
-Kết quả tham chiếu ngày 16/11/2026: **34/34 kiểm thử local đạt**. Lượt Actions được ghi nhận bị chặn trước khi chạy do billing của tài khoản chủ repository; xem [trạng thái và cách chạy lại](docs/VALIDATION.md). Kết quả local không thay thế xác nhận CI.
+Kết quả ngày 17/11/2026 sau khi gom benchmark: **57/57 kiểm thử local đạt**; [log](output/evidence/tests.log) và [mã thoát](output/evidence/test_status.json). Lượt Actions trước đây bị chặn do billing của tài khoản chủ repository; xem [trạng thái và cách chạy lại](docs/VALIDATION.md). Chưa chạy lại CI cho thay đổi này; kết quả local không thay thế xác nhận CI.
 
 Phạm vi hiện tại dùng Spark `local[2]`, lưu trữ trên filesystem và phục vụ dashboard local. Chưa kiểm chứng vận hành phân tán, nhiều người dùng đồng thời hoặc triển khai công khai có xác thực. Lợi nhuận gộp chưa bao gồm đầy đủ chi phí vận hành, marketing và hoàn trả.
 

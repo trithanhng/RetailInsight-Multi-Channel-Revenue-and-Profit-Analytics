@@ -1,0 +1,278 @@
+{
+  "cpu_model": "12th Gen Intel(R) Core(TM) i5-12450H",
+  "logical_cpus": 12,
+  "physical_cores": 8,
+  "ram_bytes": 16852574208,
+  "architecture": "AMD64",
+  "started_at_utc": "2026-11-17T12:59:10.201367+00:00",
+  "python": "3.12.10",
+  "os": "Windows-11-10.0.26300-SP0",
+  "pandas": "2.2.3",
+  "pyarrow": "21.0.0",
+  "repeats": 5,
+  "seed": 17,
+  "status": "passed",
+  "timer": "time.perf_counter wall-clock seconds",
+  "timing_boundary": "Parquet read/projection + JOIN/filter/group/window/sort + collect/normalize to pandas",
+  "cache_policy": "No application persist/cache; OS cache not cleared; initial hashing warms OS cache; first runs retained",
+  "storage_note": "Local filesystem; disk type/throughput, background load and peak memory not measured",
+  "query_projections": {
+    "Q1": {
+      "title": "Sản phẩm có giá niêm yết >= 100 USD",
+      "tables": {
+        "DimProduct": [
+          "ProductKey",
+          "EnglishProductName",
+          "list_price_units"
+        ]
+      },
+      "sort": [
+        "ProductKey"
+      ]
+    },
+    "Q2": {
+      "title": "Doanh thu theo đại lý",
+      "tables": {
+        "FactResellerSales": [
+          "ResellerKey",
+          "order_id",
+          "revenue_units"
+        ],
+        "DimReseller": [
+          "ResellerKey",
+          "ResellerName"
+        ]
+      },
+      "sort": [
+        "ResellerKey"
+      ]
+    },
+    "Q3": {
+      "title": "Doanh thu theo danh mục và kênh",
+      "tables": {
+        "FactInternetSales": [
+          "ProductKey",
+          "channel",
+          "order_id",
+          "revenue_units",
+          "cost_units",
+          "profit_units"
+        ],
+        "FactResellerSales": [
+          "ProductKey",
+          "channel",
+          "order_id",
+          "revenue_units",
+          "cost_units",
+          "profit_units"
+        ],
+        "DimProduct": [
+          "ProductKey",
+          "ProductSubcategoryKey"
+        ],
+        "DimProductSubcategory": [
+          "ProductSubcategoryKey",
+          "ProductCategoryKey"
+        ],
+        "DimProductCategory": [
+          "ProductCategoryKey",
+          "EnglishProductCategoryName"
+        ]
+      },
+      "sort": [
+        "channel",
+        "ProductCategoryKey"
+      ]
+    },
+    "Q4": {
+      "title": "Doanh thu theo quốc gia/bang của đại lý",
+      "tables": {
+        "FactResellerSales": [
+          "ResellerKey",
+          "order_id",
+          "revenue_units"
+        ],
+        "DimReseller": [
+          "ResellerKey",
+          "GeographyKey"
+        ],
+        "DimGeography": [
+          "GeographyKey",
+          "CountryRegionCode",
+          "StateProvinceCode"
+        ]
+      },
+      "sort": [
+        "CountryRegionCode",
+        "StateProvinceCode"
+      ]
+    },
+    "Q5": {
+      "title": "Doanh thu theo năm-tháng và kênh",
+      "tables": {
+        "FactInternetSales": [
+          "OrderDateKey",
+          "channel",
+          "order_id",
+          "revenue_units",
+          "cost_units",
+          "profit_units"
+        ],
+        "FactResellerSales": [
+          "OrderDateKey",
+          "channel",
+          "order_id",
+          "revenue_units",
+          "cost_units",
+          "profit_units"
+        ],
+        "DimDate": [
+          "DateKey",
+          "FullDateAlternateKey"
+        ]
+      },
+      "sort": [
+        "purchase_month",
+        "channel"
+      ]
+    },
+    "Q6": {
+      "title": "Top 3 đại lý trong mỗi quốc gia/bang",
+      "tables": {
+        "FactResellerSales": [
+          "ResellerKey",
+          "revenue_units"
+        ],
+        "DimReseller": [
+          "ResellerKey",
+          "ResellerName",
+          "GeographyKey"
+        ],
+        "DimGeography": [
+          "GeographyKey",
+          "CountryRegionCode",
+          "StateProvinceCode"
+        ]
+      },
+      "sort": [
+        "CountryRegionCode",
+        "StateProvinceCode",
+        "rank"
+      ]
+    },
+    "Q7": {
+      "title": "Doanh thu và số đơn theo loại hình đại lý",
+      "tables": {
+        "FactResellerSales": [
+          "ResellerKey",
+          "order_id",
+          "revenue_units",
+          "cost_units",
+          "profit_units"
+        ],
+        "DimReseller": [
+          "ResellerKey",
+          "BusinessType"
+        ]
+      },
+      "sort": [
+        "BusinessType"
+      ]
+    },
+    "Q8": {
+      "title": "Top 10 khách hàng Internet theo chi tiêu",
+      "tables": {
+        "FactInternetSales": [
+          "CustomerKey",
+          "order_id",
+          "revenue_units"
+        ],
+        "DimCustomer": [
+          "CustomerKey"
+        ]
+      },
+      "sort": [
+        "revenue_units",
+        "CustomerKey"
+      ],
+      "ascending": [
+        false,
+        true
+      ]
+    }
+  },
+  "source_sha256": {
+    "src\\benchmark\\runner.py": "7ecbbeb8d8ca6b999d7fa4cfec3253a37be0f257d690840329e0e4216573b9e3",
+    "src\\benchmark\\queries.py": "0b3585bc1053099049038761c8ff30e3b5cb70e89de3e3cb96befcba5afcfd64",
+    "src\\benchmark\\mart.py": "7b8a1842764e8264d165783b1f2234cbf1166b18ef544d26b9377782ae321cef",
+    "src\\benchmark\\prepare.py": "6e4243a6885947ef33844afe9d0243a6018e668962ce0f7247755569d21ede22",
+    "src\\ingestion\\source.py": "4918386b4b7ed517de0079994cabf7735cd5b7c584a2c6d19200c9d6cea00a53",
+    "src\\cleaning\\source.py": "c2aa299bf2a3578321c840c00159372e3c1cf15afff4ba9537216351f0b312eb",
+    "src\\utils\\files.py": "cd53c5950838565fe9658b9ae43b049d22e22feeabbe79503b0e5e3570ee83de"
+  },
+  "preparation_seconds": 5.656369199976325,
+  "sql_sha256": {
+    "Q1": "7c22e685399718f54ff02833332813aaeb055209a53823d5569afcba1011eab7",
+    "Q2": "22e3d13bc36d1c3b0f30d8e7c0356dec5bdcaaab9d1f19e0e848f3c4cf968674",
+    "Q3": "d1d6fdda3ebbf4c45e048bfea18890327b417a15dc6671721479e37b321aa234",
+    "Q4": "c5a3f25835bf5f2f4d976d462317146732481e7edd68ff5bfe43cc967a0d0aad",
+    "Q5": "d9e86af150491bc5e494c228e4808980da93c92884dc5b349b8b097d64a9436e",
+    "Q6": "4d3c1a79601e90cb5ca8f05370fa9743f6011f185fe7b797fa6129dc7684c79f",
+    "Q7": "b44fd42998fb660127d54346563d22669262d440076b6107bd031c32c90cfcbd",
+    "Q8": "ac0c2add5e217ca4e48752e3cbacca380ec1df65b6f736cdcf56b4ce9bdecf19"
+  },
+  "spark_startup_seconds": 6.053992600063793,
+  "spark": "4.0.1",
+  "master": "local[2]",
+  "default_parallelism": 2,
+  "driver_heap_max_bytes": 1073741824,
+  "sql_config": {
+    "spark.sql.shuffle.partitions": "4",
+    "spark.sql.session.timeZone": "UTC",
+    "spark.sql.adaptive.enabled": "true",
+    "spark.sql.autoBroadcastJoinThreshold": "10485760b",
+    "spark.sql.execution.arrow.pyspark.enabled": "false",
+    "spark.sql.ansi.enabled": "true"
+  },
+  "spark_memory_config": {
+    "spark.driver.memory": "default",
+    "spark.executor.memory": "default"
+  },
+  "java_version": "java version \"17.0.12\" 2024-07-16 LTS\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)\n",
+  "diagnostic_queries_after_measurement": 8,
+  "raw_sha256_after_measurement": {
+    "DimAccount.csv": "4d056c310c97a247cd0c11c8ba6d8f393c0c385b167b76c5ceeb94345058bf9e",
+    "DimCurrency.csv": "9ff911e2d0447204806722e736d74e9686faad7c68b9fe896446ed83264239f6",
+    "DimCustomer.csv": "548dd1ffefc1419952d777c985a6c216ce32624138ffeb2743b17b9c7964b6fc",
+    "DimDate.csv": "1be7b27194b4b5dae6fb3d619d81c34c0757a748be6381e5d765c42c5db132f8",
+    "DimDepartmentGroup.csv": "4802f96fbb3aec748d1e86d87d02844aaefa4f9c9e757eb5e1c987ccd1dbd03d",
+    "DimEmployee.csv": "35da8bbbba32e12f878c138178921d16f71dec9381221cf9e4b535d106a21859",
+    "DimGeography.csv": "65dc2a96a63619a187215290941c19165b0a62541cd545428e169b805fbad685",
+    "DimOrganization.csv": "e6a48bf30b9799dcf89d21beefd6a203fd77074e491de14102d5c53981a60636",
+    "DimProduct.csv": "8e06a201098caef67bf6e38a93042738329d9fba5dac0f3dedb3dffbdac5c4f5",
+    "DimProductCategory.csv": "1caaa9b3d7fcc7f238b1216115a502caaad5b9ca9ca035df098db515393c069d",
+    "DimProductSubcategory.csv": "4496a2e75fc0279f80acb8b68a8a4e68f88b24271973f4a457e30e1a96cc1f90",
+    "DimPromotion.csv": "dc54f4f21557dea85e3cf18e23c23649d71a2b740cdbb12130251a5a361dabec",
+    "DimReseller.csv": "676cb16ab4c6855da557f776ff82b0dbac19fe634b7914663c1146b53a58145a",
+    "DimSalesReason.csv": "89c55c34f3ecf347f57a6000d1227e8e70c8ff151be043f213a412992189f147",
+    "DimSalesTerritory.csv": "24945e074b1eb4d76a3c4e8eb750f12e13eccd20f504ed52951c85dd8e3c1c64",
+    "DimScenario.csv": "d8ce7211d3a57e7c8ae76d0b10ae1c93c2330de10030dd249651c26b034da5eb",
+    "FactAdditionalInternationalProductDescription.csv": "2b1a1ce2fee7c314aa112bdb93843c9f99eb3d4e794d1fbcf4893ff6c1190c88",
+    "FactCallCenter.csv": "898c2c4319d225c5ad1efbd1176c37e52b0565c84ec735b82546c10cfab56871",
+    "FactCurrencyRate.csv": "20481966a4b00da5a88a4c6c5928a571d556e50775ff3c0800b1ac8833231ef4",
+    "FactFinance.csv": "3b8bd6cef3a61b880ff45a47480e8dd9a1d3a4c12db1d35934f0f739c0e63624",
+    "FactInternetSales.csv": "0f87171a41f56a40d7f5f6261286e3dde83c88178fff5d55a36636e6150ed3be",
+    "FactInternetSalesReason.csv": "1a4ee88da072bd0d943a934954a0c2d479fff4cfa3b331f0ed1b3f20a33e37eb",
+    "FactProductInventory.csv": "c15e1259ced958fa9f2b92fa260e1d682fa00037d985d9a07d4591449b8d0d8a",
+    "FactResellerSales.csv": "d682b163017d95a7c3a7e026ecfd909a09f21b4c43750a844a5ce3dea4d1e274",
+    "FactSalesQuota.csv": "33e2a1c5ef5ed3ced8fbcb7ef1f5a4206f083065c48ada7fdc19e3272e7274a9",
+    "FactSurveyResponse.csv": "5ad4ddf41d5c6ffa41eebe5952ff39a1c3fda4c2cc363104502000b02c8c108a",
+    "instawdbdw.sql": "908ed29f7412234a65c781b0573b8fe6161d164c5d873b197467a2317aae9172",
+    "license.txt": "b2de5453add2e6789c152b78e5eff7886cdae8a47cb4b118f24a775dd13df5ed",
+    "NewFactCurrencyRate.csv": "51215fb06bd502fc9c669f6b15c783859274395a68242f5623e5a27501e51562",
+    "ProspectiveBuyer.csv": "118e084b3885fef81b14226afbcdeae97288ae82d2cc07b4438522d2ee6d093b"
+  },
+  "raw_unchanged": true,
+  "parquet_unchanged": true,
+  "sql_unchanged": true
+}

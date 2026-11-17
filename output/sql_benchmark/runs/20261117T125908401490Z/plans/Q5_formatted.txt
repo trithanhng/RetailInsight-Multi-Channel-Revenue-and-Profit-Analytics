@@ -1,0 +1,129 @@
+== Physical Plan ==
+AdaptiveSparkPlan (21)
++- Sort (20)
+   +- Exchange (19)
+      +- HashAggregate (18)
+         +- Exchange (17)
+            +- HashAggregate (16)
+               +- HashAggregate (15)
+                  +- Exchange (14)
+                     +- HashAggregate (13)
+                        +- Project (12)
+                           +- BroadcastHashJoin Inner BuildRight (11)
+                              :- Union (7)
+                              :  :- Project (3)
+                              :  :  +- Filter (2)
+                              :  :     +- Scan parquet  (1)
+                              :  +- Project (6)
+                              :     +- Filter (5)
+                              :        +- Scan parquet  (4)
+                              +- BroadcastExchange (10)
+                                 +- Filter (9)
+                                    +- Scan parquet  (8)
+
+
+(1) Scan parquet
+Output [6]: [order_id#3084, channel#3085, OrderDateKey#3087L, revenue_units#3089L, cost_units#3090L, profit_units#3091L]
+Batched: true
+Location: InMemoryFileIndex [file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/output/sql_benchmark/runs/20261117T125908401490Z/tables/FactInternetSales.parquet]
+PushedFilters: [IsNotNull(OrderDateKey)]
+ReadSchema: struct<order_id:string,channel:string,OrderDateKey:bigint,revenue_units:bigint,cost_units:bigint,profit_units:bigint>
+
+(2) Filter
+Input [6]: [order_id#3084, channel#3085, OrderDateKey#3087L, revenue_units#3089L, cost_units#3090L, profit_units#3091L]
+Condition : isnotnull(OrderDateKey#3087L)
+
+(3) Project
+Output [6]: [OrderDateKey#3087L, channel#3085, order_id#3084, revenue_units#3089L, cost_units#3090L, profit_units#3091L]
+Input [6]: [order_id#3084, channel#3085, OrderDateKey#3087L, revenue_units#3089L, cost_units#3090L, profit_units#3091L]
+
+(4) Scan parquet
+Output [6]: [order_id#3094, channel#3095, OrderDateKey#3097L, revenue_units#3099L, cost_units#3100L, profit_units#3101L]
+Batched: true
+Location: InMemoryFileIndex [file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/output/sql_benchmark/runs/20261117T125908401490Z/tables/FactResellerSales.parquet]
+PushedFilters: [IsNotNull(OrderDateKey)]
+ReadSchema: struct<order_id:string,channel:string,OrderDateKey:bigint,revenue_units:bigint,cost_units:bigint,profit_units:bigint>
+
+(5) Filter
+Input [6]: [order_id#3094, channel#3095, OrderDateKey#3097L, revenue_units#3099L, cost_units#3100L, profit_units#3101L]
+Condition : isnotnull(OrderDateKey#3097L)
+
+(6) Project
+Output [6]: [OrderDateKey#3097L, channel#3095, order_id#3094, revenue_units#3099L, cost_units#3100L, profit_units#3101L]
+Input [6]: [order_id#3094, channel#3095, OrderDateKey#3097L, revenue_units#3099L, cost_units#3100L, profit_units#3101L]
+
+(7) Union
+
+(8) Scan parquet
+Output [2]: [DateKey#3103L, FullDateAlternateKey#3104]
+Batched: true
+Location: InMemoryFileIndex [file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Revenue-and-Profit-Analytics/output/sql_benchmark/runs/20261117T125908401490Z/tables/DimDate.parquet]
+PushedFilters: [IsNotNull(DateKey)]
+ReadSchema: struct<DateKey:bigint,FullDateAlternateKey:timestamp_ntz>
+
+(9) Filter
+Input [2]: [DateKey#3103L, FullDateAlternateKey#3104]
+Condition : isnotnull(DateKey#3103L)
+
+(10) BroadcastExchange
+Input [2]: [DateKey#3103L, FullDateAlternateKey#3104]
+Arguments: HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=15627]
+
+(11) BroadcastHashJoin
+Left keys [1]: [OrderDateKey#3087L]
+Right keys [1]: [DateKey#3103L]
+Join type: Inner
+Join condition: None
+
+(12) Project
+Output [6]: [channel#3085, order_id#3084, revenue_units#3089L, cost_units#3090L, profit_units#3091L, date_format(cast(FullDateAlternateKey#3104 as timestamp), yyyy-MM, Some(UTC)) AS _groupingexpression#3115]
+Input [8]: [OrderDateKey#3087L, channel#3085, order_id#3084, revenue_units#3089L, cost_units#3090L, profit_units#3091L, DateKey#3103L, FullDateAlternateKey#3104]
+
+(13) HashAggregate
+Input [6]: [channel#3085, order_id#3084, revenue_units#3089L, cost_units#3090L, profit_units#3091L, _groupingexpression#3115]
+Keys [3]: [_groupingexpression#3115, channel#3085, order_id#3084]
+Functions [3]: [partial_sum(revenue_units#3089L), partial_sum(cost_units#3090L), partial_sum(profit_units#3091L)]
+Aggregate Attributes [3]: [sum(revenue_units#3089L)#3111L, sum(cost_units#3090L)#3112L, sum(profit_units#3091L)#3113L]
+Results [6]: [_groupingexpression#3115, channel#3085, order_id#3084, sum#3117L, sum#3119L, sum#3121L]
+
+(14) Exchange
+Input [6]: [_groupingexpression#3115, channel#3085, order_id#3084, sum#3117L, sum#3119L, sum#3121L]
+Arguments: hashpartitioning(_groupingexpression#3115, channel#3085, order_id#3084, 4), ENSURE_REQUIREMENTS, [plan_id=15632]
+
+(15) HashAggregate
+Input [6]: [_groupingexpression#3115, channel#3085, order_id#3084, sum#3117L, sum#3119L, sum#3121L]
+Keys [3]: [_groupingexpression#3115, channel#3085, order_id#3084]
+Functions [3]: [merge_sum(revenue_units#3089L), merge_sum(cost_units#3090L), merge_sum(profit_units#3091L)]
+Aggregate Attributes [3]: [sum(revenue_units#3089L)#3111L, sum(cost_units#3090L)#3112L, sum(profit_units#3091L)#3113L]
+Results [6]: [_groupingexpression#3115, channel#3085, order_id#3084, sum#3117L, sum#3119L, sum#3121L]
+
+(16) HashAggregate
+Input [6]: [_groupingexpression#3115, channel#3085, order_id#3084, sum#3117L, sum#3119L, sum#3121L]
+Keys [2]: [_groupingexpression#3115, channel#3085]
+Functions [4]: [merge_sum(revenue_units#3089L), merge_sum(cost_units#3090L), merge_sum(profit_units#3091L), partial_count(distinct order_id#3084)]
+Aggregate Attributes [4]: [sum(revenue_units#3089L)#3111L, sum(cost_units#3090L)#3112L, sum(profit_units#3091L)#3113L, count(order_id#3084)#3114L]
+Results [6]: [_groupingexpression#3115, channel#3085, sum#3117L, sum#3119L, sum#3121L, count#3124L]
+
+(17) Exchange
+Input [6]: [_groupingexpression#3115, channel#3085, sum#3117L, sum#3119L, sum#3121L, count#3124L]
+Arguments: hashpartitioning(_groupingexpression#3115, channel#3085, 4), ENSURE_REQUIREMENTS, [plan_id=15636]
+
+(18) HashAggregate
+Input [6]: [_groupingexpression#3115, channel#3085, sum#3117L, sum#3119L, sum#3121L, count#3124L]
+Keys [2]: [_groupingexpression#3115, channel#3085]
+Functions [4]: [sum(revenue_units#3089L), sum(cost_units#3090L), sum(profit_units#3091L), count(distinct order_id#3084)]
+Aggregate Attributes [4]: [sum(revenue_units#3089L)#3111L, sum(cost_units#3090L)#3112L, sum(profit_units#3091L)#3113L, count(order_id#3084)#3114L]
+Results [6]: [_groupingexpression#3115 AS purchase_month#3106, channel#3085, sum(revenue_units#3089L)#3111L AS revenue_units#3107L, sum(cost_units#3090L)#3112L AS cost_units#3108L, sum(profit_units#3091L)#3113L AS profit_units#3109L, count(order_id#3084)#3114L AS orders#3110L]
+
+(19) Exchange
+Input [6]: [purchase_month#3106, channel#3085, revenue_units#3107L, cost_units#3108L, profit_units#3109L, orders#3110L]
+Arguments: rangepartitioning(purchase_month#3106 ASC NULLS FIRST, channel#3085 ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=15639]
+
+(20) Sort
+Input [6]: [purchase_month#3106, channel#3085, revenue_units#3107L, cost_units#3108L, profit_units#3109L, orders#3110L]
+Arguments: [purchase_month#3106 ASC NULLS FIRST, channel#3085 ASC NULLS FIRST], true, 0
+
+(21) AdaptiveSparkPlan
+Output [6]: [purchase_month#3106, channel#3085, revenue_units#3107L, cost_units#3108L, profit_units#3109L, orders#3110L]
+Arguments: isFinalPlan=false
+

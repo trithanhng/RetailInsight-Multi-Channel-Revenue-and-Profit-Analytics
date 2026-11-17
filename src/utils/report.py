@@ -81,6 +81,8 @@ def build_markdown_report(output=ROOT / 'docs/BAO_CAO.md'):
     fact = pd.read_parquet(run / 'gold/fact_sales.parquet')
     manifest = json.loads((run / 'manifest.json').read_text(encoding='utf-8'))
     environment = json.loads((run / 'benchmark_environment.json').read_text(encoding='utf-8'))
+    if environment.get('status', 'passed') != 'passed':
+        raise ValueError('Benchmark chưa hoàn tất hoặc không khớp; không xuất báo cáo thành công.')
     quality = pd.read_csv(run / 'quality/summary.csv')
     summary = pd.read_csv(run / 'benchmark_summary.csv')
     total = kpis(fact)
@@ -181,9 +183,11 @@ def build_report(output=ROOT / 'output' / 'Bao_cao_pipeline_dashboard.pdf'):
     run = current_run()
     fact = pd.read_parquet(run / 'gold' / 'fact_sales.parquet')
     manifest = json.loads((run / 'manifest.json').read_text(encoding='utf-8'))
+    environment = json.loads((run / 'benchmark_environment.json').read_text(encoding='utf-8'))
+    if environment.get('status', 'passed') != 'passed':
+        raise ValueError('Benchmark chưa hoàn tất hoặc không khớp; không xuất báo cáo thành công.')
     quality = pd.read_csv(run / 'quality' / 'summary.csv')
     benchmark = pd.read_csv(run / 'benchmark_summary.csv')
-    environment = json.loads((run / 'benchmark_environment.json').read_text(encoding='utf-8'))
     register_fonts()
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle('BodyVN', fontName='Report', fontSize=10, leading=15, spaceAfter=8))

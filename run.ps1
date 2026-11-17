@@ -1,4 +1,4 @@
-param([ValidateSet('all','pipeline','benchmark','load-test','test','dashboard','report','package')][string]$Task = 'dashboard')
+param([ValidateSet('all','pipeline','benchmark','sql-benchmark','load-test','test','dashboard','report','package')][string]$Task = 'dashboard')
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
 $taskPython = Join-Path $PSScriptRoot '.venv\Scripts\python.exe'
@@ -13,8 +13,9 @@ function Invoke-TaskPython {
     if ($LASTEXITCODE -ne 0) { throw 'Python task failed; inspect output above' }
 }
 if ($Task -in @('all','pipeline')) { Invoke-TaskPython @('-m','src.pipeline.retail','--download') }
-if ($Task -in @('all','benchmark')) { Invoke-TaskPython @('-m','src.pipeline.benchmark','--repeats','3') }
-if ($Task -eq 'load-test') { Invoke-TaskPython @('-m','src.pipeline.benchmark','--scale','5','--repeats','3') }
+if ($Task -in @('all','benchmark')) { Invoke-TaskPython @('-m','src.benchmark.mart','--repeats','3') }
+if ($Task -eq 'sql-benchmark') { Invoke-TaskPython @('-m','src.benchmark.runner','--repeats','5') }
+if ($Task -eq 'load-test') { Invoke-TaskPython @('-m','src.benchmark.mart','--scale','5','--repeats','3') }
 if ($Task -in @('all','report')) { Invoke-TaskPython @('-m','src.utils.report') }
 if ($Task -eq 'test') { Invoke-TaskPython @('-m','src.utils.delivery','--verify') }
 if ($Task -eq 'package') { Invoke-TaskPython @('-m','src.utils.delivery','--package') }

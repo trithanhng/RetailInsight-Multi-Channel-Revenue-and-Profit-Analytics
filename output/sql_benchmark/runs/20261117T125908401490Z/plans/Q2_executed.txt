@@ -1,0 +1,43 @@
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 4
+   +- *(5) Sort [ResellerKey#2842L ASC NULLS FIRST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 3
+            +- Exchange rangepartitioning(ResellerKey#2842L ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=14515]
+               +- *(4) HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850], functions=[sum(revenue_units#2843L), count(distinct order_id#2838)], output=[ResellerKey#2842L, ResellerName#2850, revenue_units#2852L, orders#2853L])
+                  +- AQEShuffleRead coalesced
+                     +- ShuffleQueryStage 2
+                        +- Exchange hashpartitioning(ResellerKey#2842L, ResellerName#2850, 4), ENSURE_REQUIREMENTS, [plan_id=14485]
+                           +- *(3) HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850], functions=[merge_sum(revenue_units#2843L), partial_count(distinct order_id#2838)], output=[ResellerKey#2842L, ResellerName#2850, sum#2857L, count#2860L])
+                              +- *(3) HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850, order_id#2838], functions=[merge_sum(revenue_units#2843L)], output=[ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L])
+                                 +- AQEShuffleRead coalesced
+                                    +- ShuffleQueryStage 1
+                                       +- Exchange hashpartitioning(ResellerKey#2842L, ResellerName#2850, order_id#2838, 4), ENSURE_REQUIREMENTS, [plan_id=14439]
+                                          +- *(2) HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850, order_id#2838], functions=[partial_sum(revenue_units#2843L)], output=[ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L])
+                                             +- *(2) Project [ResellerKey#2842L, order_id#2838, revenue_units#2843L, ResellerName#2850]
+                                                +- *(2) BroadcastHashJoin [ResellerKey#2842L], [ResellerKey#2847L], Inner, BuildRight, false
+                                                   :- *(2) Filter isnotnull(ResellerKey#2842L)
+                                                   :  +- *(2) ColumnarToRow
+                                                   :     +- FileScan parquet [order_id#2838,ResellerKey#2842L,revenue_units#2843L] Batched: true, DataFilters: [isnotnull(ResellerKey#2842L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<order_id:string,ResellerKey:bigint,revenue_units:bigint>
+                                                   +- BroadcastQueryStage 0
+                                                      +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14346]
+                                                         +- *(1) Filter isnotnull(ResellerKey#2847L)
+                                                            +- *(1) ColumnarToRow
+                                                               +- FileScan parquet [ResellerKey#2847L,ResellerName#2850] Batched: true, DataFilters: [isnotnull(ResellerKey#2847L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,ResellerName:string>
++- == Initial Plan ==
+   Sort [ResellerKey#2842L ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(ResellerKey#2842L ASC NULLS FIRST, 4), ENSURE_REQUIREMENTS, [plan_id=14312]
+      +- HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850], functions=[sum(revenue_units#2843L), count(distinct order_id#2838)], output=[ResellerKey#2842L, ResellerName#2850, revenue_units#2852L, orders#2853L])
+         +- Exchange hashpartitioning(ResellerKey#2842L, ResellerName#2850, 4), ENSURE_REQUIREMENTS, [plan_id=14309]
+            +- HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850], functions=[merge_sum(revenue_units#2843L), partial_count(distinct order_id#2838)], output=[ResellerKey#2842L, ResellerName#2850, sum#2857L, count#2860L])
+               +- HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850, order_id#2838], functions=[merge_sum(revenue_units#2843L)], output=[ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L])
+                  +- Exchange hashpartitioning(ResellerKey#2842L, ResellerName#2850, order_id#2838, 4), ENSURE_REQUIREMENTS, [plan_id=14305]
+                     +- HashAggregate(keys=[ResellerKey#2842L, ResellerName#2850, order_id#2838], functions=[partial_sum(revenue_units#2843L)], output=[ResellerKey#2842L, ResellerName#2850, order_id#2838, sum#2857L])
+                        +- Project [ResellerKey#2842L, order_id#2838, revenue_units#2843L, ResellerName#2850]
+                           +- BroadcastHashJoin [ResellerKey#2842L], [ResellerKey#2847L], Inner, BuildRight, false
+                              :- Filter isnotnull(ResellerKey#2842L)
+                              :  +- FileScan parquet [order_id#2838,ResellerKey#2842L,revenue_units#2843L] Batched: true, DataFilters: [isnotnull(ResellerKey#2842L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<order_id:string,ResellerKey:bigint,revenue_units:bigint>
+                              +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14300]
+                                 +- Filter isnotnull(ResellerKey#2847L)
+                                    +- FileScan parquet [ResellerKey#2847L,ResellerName#2850] Batched: true, DataFilters: [isnotnull(ResellerKey#2847L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ResellerKey)], ReadSchema: struct<ResellerKey:bigint,ResellerName:string>

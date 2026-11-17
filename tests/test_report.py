@@ -2,6 +2,22 @@ import fitz
 import pytest
 
 
+@pytest.mark.parametrize('builder', ['build_report', 'build_markdown_report'])
+def test_failed_benchmark_cannot_be_reported_as_success(tmp_path, monkeypatch, builder):
+    import json
+    from src.utils import report
+    import pandas as pd
+
+    (tmp_path / 'gold').mkdir()
+    pd.DataFrame({'order_id': ['a']}).to_parquet(tmp_path / 'gold/fact_sales.parquet')
+    (tmp_path / 'manifest.json').write_text('{}')
+    (tmp_path / 'benchmark_environment.json').write_text(json.dumps({'status': 'failed'}))
+    monkeypatch.setattr(report, 'current_run', lambda: tmp_path)
+    with pytest.raises(ValueError, match='Benchmark'):
+        getattr(report, builder)(tmp_path / 'should-not-exist')
+    assert not (tmp_path / 'should-not-exist').exists()
+
+
 def test_report_contains_measured_kpis_and_fictitious_source_notice(tmp_path):
     try:
         from src.utils.report import build_report

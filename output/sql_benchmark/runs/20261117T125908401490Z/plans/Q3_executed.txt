@@ -1,0 +1,78 @@
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 6
+   +- *(9) Sort [channel#2889 ASC NULLS FIRST, ProductCategoryKey#2915L ASC NULLS LAST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 5
+            +- Exchange rangepartitioning(channel#2889 ASC NULLS FIRST, ProductCategoryKey#2915L ASC NULLS LAST, 4), ENSURE_REQUIREMENTS, [plan_id=15100]
+               +- *(8) HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916], functions=[sum(revenue_units#2893L), sum(cost_units#2894L), sum(profit_units#2895L), count(distinct order_id#2888)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, revenue_units#2918L, cost_units#2919L, profit_units#2920L, orders#2921L])
+                  +- AQEShuffleRead coalesced
+                     +- ShuffleQueryStage 4
+                        +- Exchange hashpartitioning(channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, 4), ENSURE_REQUIREMENTS, [plan_id=15070]
+                           +- *(7) HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916], functions=[merge_sum(revenue_units#2893L), merge_sum(cost_units#2894L), merge_sum(profit_units#2895L), partial_count(distinct order_id#2888)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, sum#2927L, sum#2929L, sum#2931L, count#2934L])
+                              +- *(7) HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888], functions=[merge_sum(revenue_units#2893L), merge_sum(cost_units#2894L), merge_sum(profit_units#2895L)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, sum#2927L, sum#2929L, sum#2931L])
+                                 +- AQEShuffleRead coalesced
+                                    +- ShuffleQueryStage 3
+                                       +- Exchange hashpartitioning(channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, 4), ENSURE_REQUIREMENTS, [plan_id=15002]
+                                          +- *(6) HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888], functions=[partial_sum(revenue_units#2893L), partial_sum(cost_units#2894L), partial_sum(profit_units#2895L)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, sum#2927L, sum#2929L, sum#2931L])
+                                             +- *(6) Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductCategoryKey#2915L, EnglishProductCategoryName#2916]
+                                                +- *(6) BroadcastHashJoin [ProductCategoryKey#2913L], [ProductCategoryKey#2915L], LeftOuter, BuildRight, false
+                                                   :- *(6) Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductCategoryKey#2913L]
+                                                   :  +- *(6) BroadcastHashJoin [ProductSubcategoryKey#2908L], [ProductSubcategoryKey#2912L], LeftOuter, BuildRight, false
+                                                   :     :- *(6) Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductSubcategoryKey#2908L]
+                                                   :     :  +- *(6) BroadcastHashJoin [ProductKey#2890L], [ProductKey#2907L], Inner, BuildRight, false
+                                                   :     :     :- Union
+                                                   :     :     :  :- *(4) Project [ProductKey#2890L, channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L]
+                                                   :     :     :  :  +- *(4) Filter isnotnull(ProductKey#2890L)
+                                                   :     :     :  :     +- *(4) ColumnarToRow
+                                                   :     :     :  :        +- FileScan parquet [order_id#2888,channel#2889,ProductKey#2890L,revenue_units#2893L,cost_units#2894L,profit_units#2895L] Batched: true, DataFilters: [isnotnull(ProductKey#2890L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<order_id:string,channel:string,ProductKey:bigint,revenue_units:bigint,cost_units:bigint,pr...
+                                                   :     :     :  +- *(5) Project [ProductKey#2900L, channel#2899, order_id#2898, revenue_units#2903L, cost_units#2904L, profit_units#2905L]
+                                                   :     :     :     +- *(5) Filter isnotnull(ProductKey#2900L)
+                                                   :     :     :        +- *(5) ColumnarToRow
+                                                   :     :     :           +- FileScan parquet [order_id#2898,channel#2899,ProductKey#2900L,revenue_units#2903L,cost_units#2904L,profit_units#2905L] Batched: true, DataFilters: [isnotnull(ProductKey#2900L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<order_id:string,channel:string,ProductKey:bigint,revenue_units:bigint,cost_units:bigint,pr...
+                                                   :     :     +- BroadcastQueryStage 0
+                                                   :     :        +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14724]
+                                                   :     :           +- *(1) Filter isnotnull(ProductKey#2907L)
+                                                   :     :              +- *(1) ColumnarToRow
+                                                   :     :                 +- FileScan parquet [ProductKey#2907L,ProductSubcategoryKey#2908L] Batched: true, DataFilters: [isnotnull(ProductKey#2907L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<ProductKey:bigint,ProductSubcategoryKey:bigint>
+                                                   :     +- BroadcastQueryStage 1
+                                                   :        +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14741]
+                                                   :           +- *(2) Filter isnotnull(ProductSubcategoryKey#2912L)
+                                                   :              +- *(2) ColumnarToRow
+                                                   :                 +- FileScan parquet [ProductSubcategoryKey#2912L,ProductCategoryKey#2913L] Batched: true, DataFilters: [isnotnull(ProductSubcategoryKey#2912L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductSubcategoryKey)], ReadSchema: struct<ProductSubcategoryKey:bigint,ProductCategoryKey:bigint>
+                                                   +- BroadcastQueryStage 2
+                                                      +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14758]
+                                                         +- *(3) Filter isnotnull(ProductCategoryKey#2915L)
+                                                            +- *(3) ColumnarToRow
+                                                               +- FileScan parquet [ProductCategoryKey#2915L,EnglishProductCategoryName#2916] Batched: true, DataFilters: [isnotnull(ProductCategoryKey#2915L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductCategoryKey)], ReadSchema: struct<ProductCategoryKey:bigint,EnglishProductCategoryName:string>
++- == Initial Plan ==
+   Sort [channel#2889 ASC NULLS FIRST, ProductCategoryKey#2915L ASC NULLS LAST], true, 0
+   +- Exchange rangepartitioning(channel#2889 ASC NULLS FIRST, ProductCategoryKey#2915L ASC NULLS LAST, 4), ENSURE_REQUIREMENTS, [plan_id=14666]
+      +- HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916], functions=[sum(revenue_units#2893L), sum(cost_units#2894L), sum(profit_units#2895L), count(distinct order_id#2888)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, revenue_units#2918L, cost_units#2919L, profit_units#2920L, orders#2921L])
+         +- Exchange hashpartitioning(channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, 4), ENSURE_REQUIREMENTS, [plan_id=14663]
+            +- HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916], functions=[merge_sum(revenue_units#2893L), merge_sum(cost_units#2894L), merge_sum(profit_units#2895L), partial_count(distinct order_id#2888)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, sum#2927L, sum#2929L, sum#2931L, count#2934L])
+               +- HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888], functions=[merge_sum(revenue_units#2893L), merge_sum(cost_units#2894L), merge_sum(profit_units#2895L)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, sum#2927L, sum#2929L, sum#2931L])
+                  +- Exchange hashpartitioning(channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, 4), ENSURE_REQUIREMENTS, [plan_id=14659]
+                     +- HashAggregate(keys=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888], functions=[partial_sum(revenue_units#2893L), partial_sum(cost_units#2894L), partial_sum(profit_units#2895L)], output=[channel#2889, ProductCategoryKey#2915L, EnglishProductCategoryName#2916, order_id#2888, sum#2927L, sum#2929L, sum#2931L])
+                        +- Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductCategoryKey#2915L, EnglishProductCategoryName#2916]
+                           +- BroadcastHashJoin [ProductCategoryKey#2913L], [ProductCategoryKey#2915L], LeftOuter, BuildRight, false
+                              :- Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductCategoryKey#2913L]
+                              :  +- BroadcastHashJoin [ProductSubcategoryKey#2908L], [ProductSubcategoryKey#2912L], LeftOuter, BuildRight, false
+                              :     :- Project [channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L, ProductSubcategoryKey#2908L]
+                              :     :  +- BroadcastHashJoin [ProductKey#2890L], [ProductKey#2907L], Inner, BuildRight, false
+                              :     :     :- Union
+                              :     :     :  :- Project [ProductKey#2890L, channel#2889, order_id#2888, revenue_units#2893L, cost_units#2894L, profit_units#2895L]
+                              :     :     :  :  +- Filter isnotnull(ProductKey#2890L)
+                              :     :     :  :     +- FileScan parquet [order_id#2888,channel#2889,ProductKey#2890L,revenue_units#2893L,cost_units#2894L,profit_units#2895L] Batched: true, DataFilters: [isnotnull(ProductKey#2890L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<order_id:string,channel:string,ProductKey:bigint,revenue_units:bigint,cost_units:bigint,pr...
+                              :     :     :  +- Project [ProductKey#2900L, channel#2899, order_id#2898, revenue_units#2903L, cost_units#2904L, profit_units#2905L]
+                              :     :     :     +- Filter isnotnull(ProductKey#2900L)
+                              :     :     :        +- FileScan parquet [order_id#2898,channel#2899,ProductKey#2900L,revenue_units#2903L,cost_units#2904L,profit_units#2905L] Batched: true, DataFilters: [isnotnull(ProductKey#2900L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<order_id:string,channel:string,ProductKey:bigint,revenue_units:bigint,cost_units:bigint,pr...
+                              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14646]
+                              :     :        +- Filter isnotnull(ProductKey#2907L)
+                              :     :           +- FileScan parquet [ProductKey#2907L,ProductSubcategoryKey#2908L] Batched: true, DataFilters: [isnotnull(ProductKey#2907L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductKey)], ReadSchema: struct<ProductKey:bigint,ProductSubcategoryKey:bigint>
+                              :     +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14650]
+                              :        +- Filter isnotnull(ProductSubcategoryKey#2912L)
+                              :           +- FileScan parquet [ProductSubcategoryKey#2912L,ProductCategoryKey#2913L] Batched: true, DataFilters: [isnotnull(ProductSubcategoryKey#2912L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductSubcategoryKey)], ReadSchema: struct<ProductSubcategoryKey:bigint,ProductCategoryKey:bigint>
+                              +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, bigint, false]),false), [plan_id=14654]
+                                 +- Filter isnotnull(ProductCategoryKey#2915L)
+                                    +- FileScan parquet [ProductCategoryKey#2915L,EnglishProductCategoryName#2916] Batched: true, DataFilters: [isnotnull(ProductCategoryKey#2915L)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[file:/E:/hc/BIG DATA Analyst and BA/BTL/RetailInsight-Multi-Channel-Re..., PartitionFilters: [], PushedFilters: [IsNotNull(ProductCategoryKey)], ReadSchema: struct<ProductCategoryKey:bigint,EnglishProductCategoryName:string>
