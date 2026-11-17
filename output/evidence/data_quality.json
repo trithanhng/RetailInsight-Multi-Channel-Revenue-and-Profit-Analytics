@@ -1,0 +1,985 @@
+[
+  {
+    "table": "FactInternetSales",
+    "rows_before": 60398,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 60398,
+    "columns": [
+      {
+        "column": "ProductKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DueDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ShipDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CustomerKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "PromotionKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CurrencyKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesTerritoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesOrderNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesOrderLineNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "RevisionNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderQuantity",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "UnitPrice",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ExtendedAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "UnitPriceDiscountPct",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DiscountAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductStandardCost",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "TotalProductCost",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "TaxAmt",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "Freight",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CarrierTrackingNumber",
+        "dtype_before": "string",
+        "missing_before": 60398,
+        "dtype_after": "string",
+        "missing_after": 60398
+      },
+      {
+        "column": "CustomerPONumber",
+        "dtype_before": "string",
+        "missing_before": 60398,
+        "dtype_after": "string",
+        "missing_after": 60398
+      },
+      {
+        "column": "OrderDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DueDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ShipDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 7.6923076923076925
+  },
+  {
+    "table": "FactResellerSales",
+    "rows_before": 60855,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 60855,
+    "columns": [
+      {
+        "column": "ProductKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DueDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ShipDateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ResellerKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "EmployeeKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "PromotionKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CurrencyKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesTerritoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesOrderNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesOrderLineNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "RevisionNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderQuantity",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "UnitPrice",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ExtendedAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "UnitPriceDiscountPct",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DiscountAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductStandardCost",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "TotalProductCost",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesAmount",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "TaxAmt",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "Freight",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CarrierTrackingNumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CustomerPONumber",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "DueDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ShipDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 0.0
+  },
+  {
+    "table": "DimProduct",
+    "rows_before": 606,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 606,
+    "columns": [
+      {
+        "column": "ProductKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductSubcategoryKey",
+        "dtype_before": "string",
+        "missing_before": 209,
+        "dtype_after": "string",
+        "missing_after": 209
+      },
+      {
+        "column": "WeightUnitMeasureCode",
+        "dtype_before": "string",
+        "missing_before": 324,
+        "dtype_after": "string",
+        "missing_after": 324
+      },
+      {
+        "column": "SizeUnitMeasureCode",
+        "dtype_before": "string",
+        "missing_before": 353,
+        "dtype_after": "string",
+        "missing_after": 353
+      },
+      {
+        "column": "EnglishProductName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SpanishProductName",
+        "dtype_before": "string",
+        "missing_before": 287,
+        "dtype_after": "string",
+        "missing_after": 287
+      },
+      {
+        "column": "FrenchProductName",
+        "dtype_before": "string",
+        "missing_before": 287,
+        "dtype_after": "string",
+        "missing_after": 287
+      },
+      {
+        "column": "StandardCost",
+        "dtype_before": "string",
+        "missing_before": 211,
+        "dtype_after": "string",
+        "missing_after": 211
+      },
+      {
+        "column": "FinishedGoodsFlag",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "Color",
+        "dtype_before": "string",
+        "missing_before": 254,
+        "dtype_after": "string",
+        "missing_after": 254
+      },
+      {
+        "column": "SafetyStockLevel",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ReorderPoint",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ListPrice",
+        "dtype_before": "string",
+        "missing_before": 211,
+        "dtype_after": "string",
+        "missing_after": 211
+      },
+      {
+        "column": "Size",
+        "dtype_before": "string",
+        "missing_before": 307,
+        "dtype_after": "string",
+        "missing_after": 307
+      },
+      {
+        "column": "SizeRange",
+        "dtype_before": "string",
+        "missing_before": 307,
+        "dtype_after": "string",
+        "missing_after": 307
+      },
+      {
+        "column": "Weight",
+        "dtype_before": "string",
+        "missing_before": 324,
+        "dtype_after": "string",
+        "missing_after": 324
+      },
+      {
+        "column": "DaysToManufacture",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductLine",
+        "dtype_before": "string",
+        "missing_before": 226,
+        "dtype_after": "string",
+        "missing_after": 226
+      },
+      {
+        "column": "DealerPrice",
+        "dtype_before": "string",
+        "missing_before": 211,
+        "dtype_after": "string",
+        "missing_after": 211
+      },
+      {
+        "column": "Class",
+        "dtype_before": "string",
+        "missing_before": 276,
+        "dtype_after": "string",
+        "missing_after": 276
+      },
+      {
+        "column": "Style",
+        "dtype_before": "string",
+        "missing_before": 305,
+        "dtype_after": "string",
+        "missing_after": 305
+      },
+      {
+        "column": "ModelName",
+        "dtype_before": "string",
+        "missing_before": 209,
+        "dtype_after": "string",
+        "missing_after": 209
+      },
+      {
+        "column": "LargePhoto",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "EnglishDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "FrenchDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "ChineseDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "ArabicDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "HebrewDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "ThaiDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "GermanDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "JapaneseDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "TurkishDescription",
+        "dtype_before": "string",
+        "missing_before": 210,
+        "dtype_after": "string",
+        "missing_after": 210
+      },
+      {
+        "column": "StartDate",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "EndDate",
+        "dtype_before": "string",
+        "missing_before": 406,
+        "dtype_after": "string",
+        "missing_after": 406
+      },
+      {
+        "column": "Status",
+        "dtype_before": "string",
+        "missing_before": 200,
+        "dtype_after": "string",
+        "missing_after": 200
+      }
+    ],
+    "missing_pct_before": 31.156032269893657
+  },
+  {
+    "table": "DimProductSubcategory",
+    "rows_before": 37,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 37,
+    "columns": [
+      {
+        "column": "ProductSubcategoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductSubcategoryAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "EnglishProductSubcategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SpanishProductSubcategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "FrenchProductSubcategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductCategoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 0.0
+  },
+  {
+    "table": "DimProductCategory",
+    "rows_before": 4,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 4,
+    "columns": [
+      {
+        "column": "ProductCategoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ProductCategoryAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "EnglishProductCategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SpanishProductCategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "FrenchProductCategoryName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 0.0
+  },
+  {
+    "table": "DimSalesTerritory",
+    "rows_before": 11,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 11,
+    "columns": [
+      {
+        "column": "SalesTerritoryKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesTerritoryAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "SalesTerritoryRegion",
+        "dtype_before": "string",
+        "missing_before": 1,
+        "dtype_after": "string",
+        "missing_after": 1
+      },
+      {
+        "column": "SalesTerritoryCountry",
+        "dtype_before": "string",
+        "missing_before": 1,
+        "dtype_after": "string",
+        "missing_after": 1
+      },
+      {
+        "column": "SalesTerritoryGroup",
+        "dtype_before": "string",
+        "missing_before": 1,
+        "dtype_after": "string",
+        "missing_after": 1
+      },
+      {
+        "column": "SalesTerritoryImage",
+        "dtype_before": "string",
+        "missing_before": 1,
+        "dtype_after": "string",
+        "missing_after": 1
+      }
+    ],
+    "missing_pct_before": 6.0606060606060606
+  },
+  {
+    "table": "DimCurrency",
+    "rows_before": 105,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 105,
+    "columns": [
+      {
+        "column": "CurrencyKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CurrencyAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "CurrencyName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 0.0
+  },
+  {
+    "table": "DimReseller",
+    "rows_before": 701,
+    "duplicates_removed": 0,
+    "rows_rejected": 0,
+    "rows_after": 701,
+    "columns": [
+      {
+        "column": "ResellerKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "GeographyKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ResellerAlternateKey",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "Phone",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "BusinessType",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "ResellerName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "NumberEmployees",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderFrequency",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "OrderMonth",
+        "dtype_before": "string",
+        "missing_before": 66,
+        "dtype_after": "string",
+        "missing_after": 66
+      },
+      {
+        "column": "FirstOrderYear",
+        "dtype_before": "string",
+        "missing_before": 66,
+        "dtype_after": "string",
+        "missing_after": 66
+      },
+      {
+        "column": "LastOrderYear",
+        "dtype_before": "string",
+        "missing_before": 66,
+        "dtype_after": "string",
+        "missing_after": 66
+      },
+      {
+        "column": "ProductLine",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "AddressLine1",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "AddressLine2",
+        "dtype_before": "string",
+        "missing_before": 668,
+        "dtype_after": "string",
+        "missing_after": 668
+      },
+      {
+        "column": "AnnualSales",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "BankName",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "MinPaymentType",
+        "dtype_before": "string",
+        "missing_before": 132,
+        "dtype_after": "string",
+        "missing_after": 132
+      },
+      {
+        "column": "MinPaymentAmount",
+        "dtype_before": "string",
+        "missing_before": 510,
+        "dtype_after": "string",
+        "missing_after": 510
+      },
+      {
+        "column": "AnnualRevenue",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      },
+      {
+        "column": "YearOpened",
+        "dtype_before": "string",
+        "missing_before": 0,
+        "dtype_after": "string",
+        "missing_after": 0
+      }
+    ],
+    "missing_pct_before": 10.756062767475036
+  }
+]

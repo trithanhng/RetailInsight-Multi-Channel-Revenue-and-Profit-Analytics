@@ -1,0 +1,9 @@
+table,rows_before,duplicates_removed,rows_rejected,rows_after,missing_pct_before
+FactInternetSales,60398,0,0,60398,7.6923076923076925
+FactResellerSales,60855,0,0,60855,0.0
+DimProduct,606,0,0,606,31.156032269893657
+DimProductSubcategory,37,0,0,37,0.0
+DimProductCategory,4,0,0,4,0.0
+DimSalesTerritory,11,0,0,11,6.0606060606060606
+DimCurrency,105,0,0,105,0.0
+DimReseller,701,0,0,701,10.756062767475036
